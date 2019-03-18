@@ -5,15 +5,7 @@ defmodule Londibot.Router do
   plug(:dispatch)
 
   get("/", do: send_resp(conn, 200, "Service up and running!"))
-
-  get("/report") do
-    message = Londibot.TFL.lines
-    |> Londibot.TFL.status
-    |> Enum.map(fn {name, status, _ } -> ~s("#{name}: #{status}") end)
-    |> Enum.join("\n")
-
-    send_resp(conn, 200, message)
-  end
+  get("/report", do: send_resp(conn, 200, Londibot.Controller.report_all))
 
   match(_, do: send_resp(conn, 404, "Nothing found here!"))
 end
