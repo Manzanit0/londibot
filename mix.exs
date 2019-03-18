@@ -11,17 +11,16 @@ defmodule Londibot.MixProject do
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      applications: [:httpoison],
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {Londibot, []}
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 1.4"},
       {:poison, "~> 4.0.1"}
     ]
