@@ -1,13 +1,14 @@
-defmodule LondibotTest do
+defmodule Londibot.TFLTest do
   use ExUnit.Case
-  doctest Londibot
+  doctest Londibot.TFL
+  alias Londibot.TFL
 
   test "lists all the lines of tube, dlr, overground and tfl-rail" do
-    assert length(Londibot.tfl_lines) == 14
+    assert length(TFL.lines) == 14
   end
 
   test "fetches the status of a single line" do
-    [{name, status, description}] = Londibot.tfl_status("victoria")
+    [{name, status, description}] = TFL.status("victoria")
 
     assert name == "Victoria"
     assert String.length(status) != 0
@@ -15,7 +16,7 @@ defmodule LondibotTest do
   end
 
   test "fetches the status of multiple lines" do
-    [{name, status, _}, {name2, status2, _}] = Londibot.tfl_status(["victoria", "circle"])
+    [{name, status, _}, {name2, status2, _}] = TFL.status(["victoria", "circle"])
 
     assert name == "Circle"
     assert name2 == "Victoria"
