@@ -6,25 +6,9 @@ defmodule Londibot.ControllerTest do
 
   import Mox
 
-  @tfl_service Application.get_env(:londibot, :tfl_service)
-
-  setup do
-    lines_response = ["Victoria"]
-    status_response = [{"Victoria", "Good Service", nil}]
-
-    @tfl_service
-    |> expect(:lines, fn -> lines_response end)
-    |> expect(:status, fn _ -> status_response end)
-
-    {:ok, tfl_service: @tfl_service}
-  end
-
-  test "mock works as expected" do
-    assert @tfl_service.lines == ["Victoria"]
-    assert @tfl_service.status("") == [{"Victoria", "Good Service", nil}]
-  end
-
   test "fetches and formats all line statuses" do
+    setup_tfl_mock()
+
     assert Controller.report_all == "Victoria: Good Service"
   end
 
@@ -41,5 +25,13 @@ defmodule Londibot.ControllerTest do
     Victoria: Good Service
     Circle: Minor Delays\
     """
+  end
+
+  defp setup_tfl_mock do
+    tfl_service = Application.get_env(:londibot, :tfl_service)
+
+    tfl_service
+    |> expect(:lines, fn -> ["Victoria"] end)
+    |> expect(:status, fn _ -> [{"Victoria", "Good Service", nil}] end)
   end
 end
