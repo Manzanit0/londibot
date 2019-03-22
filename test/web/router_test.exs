@@ -15,17 +15,6 @@ defmodule Londibot.RouterTest do
     assert conn.status == 200
   end
 
-  test "returns tfl status report" do
-    conn =
-      conn(:get, "/report")
-      |> Router.call(@opts)
-
-    assert conn.state == :sent
-    assert conn.status == 200
-    # Assert that the body contains 14 tube lines.
-    assert length(String.split(conn.resp_body, "\n")) == 14
-  end
-
   test "returns 404" do
     conn =
       conn(:get, "/missing", "")

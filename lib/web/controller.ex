@@ -1,5 +1,5 @@
 defmodule Londibot.Controller do
-  alias Londibot.TFL
+  @tfl_service Application.get_env(:londibot, :tfl_service)
 
   def report(statuses) do
     statuses
@@ -8,8 +8,8 @@ defmodule Londibot.Controller do
   end
 
   def report_all do
-    TFL.lines
-    |> TFL.status
+    @tfl_service.lines
+    |> @tfl_service.status
     |> report
   end
 end

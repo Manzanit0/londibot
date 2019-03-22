@@ -1,4 +1,12 @@
+defmodule Londibot.TFLBehaviour do
+  @callback lines() :: [String.t]
+  @callback status(list) :: String.t
+  @callback status(String.t) :: String.t
+end
+
 defmodule Londibot.TFL do
+  @behaviour Londibot.TFLBehaviour
+
   def lines do
     "https://api.tfl.gov.uk/Line/Mode/tube%2Cdlr%2Coverground%2Ctflrail"
     |> HTTPoison.get!
