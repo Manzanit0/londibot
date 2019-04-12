@@ -38,4 +38,12 @@ defmodule Londibot.TFLTest do
     assert status == "Minor Delays"
     assert description == "..."
   end
+
+  test "upon no disruptions, filter every line" do
+    status = [{"Victoria", "Good Service", "..."}, {"Circle", "Good Service", "..."}]
+
+    disruptions = TFL.disruptions(status)
+
+    assert Enum.count(disruptions) == 0
+  end
 end
