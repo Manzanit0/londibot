@@ -26,4 +26,16 @@ defmodule Londibot.TFLTest do
     assert String.length(status) != 0
     assert String.length(status2) != 0
   end
+
+  test "find disruptions within a list of statuses" do
+    status = [{"Victoria", "Good Service", "..."}, {"Circle", "Minor Delays", "..."}]
+
+    disruptions = TFL.disruptions(status)
+    {line, status, description} = Enum.fetch!(disruptions, 0)
+
+    assert Enum.count(disruptions) == 1
+    assert line == "Circle"
+    assert status == "Minor Delays"
+    assert description == "..."
+  end
 end

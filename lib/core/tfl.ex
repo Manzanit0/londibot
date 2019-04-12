@@ -29,6 +29,13 @@ defmodule Londibot.TFL do
     |> Enum.map(fn x -> parse_line(x) end)
   end
 
+  # TODO there is an interesting endpoint ->
+  # "https://api.tfl.gov.uk/Line/#{lines}/Disruption"
+  def disruptions(status) do
+    status
+    |> Enum.filter(fn {_, status, _} -> status != "Good Service" end)
+  end
+
   defp parse_line(%{"name" => name, "lineStatuses" => statuses}) do
     status = List.first(statuses)
     {name, status["statusSeverityDescription"], status["reason"]}
