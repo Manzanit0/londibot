@@ -1,31 +1,29 @@
 defmodule Londibot.Controller do
   @tfl_service Application.get_env(:londibot, :tfl_service)
 
-  def report({:disruptions, statuses}) do
-    statuses
-    |> @tfl_service.disruptions
-    |> Enum.map(fn {name, status, description} -> ~s(#{name}: #{status} - #{description}) end)
-    |> Enum.join("\n\n")
-  end
-
-  def report(statuses) do
-    statuses
-    |> Enum.map(fn {name, status, _ } -> ~s(#{name}: #{status}) end)
-    |> Enum.join("\n")
-  end
-
-  def report_all(:disruptions) do
-    disruptions =
+  def report_all(mode) do
+    statuses =
       @tfl_service.lines
       |> @tfl_service.status
-      |> @tfl_service.disruptions
 
-    report({:disruptions, disruptions})
+    report(mode, statuses)
   end
 
-  def report_all do
-    @tfl_service.lines
-    |> @tfl_service.status
-    |> report
+  def report(mode, statuses) do
+    filtered_statuses =
+      case mode do
+        :summary -> statuses
+        :disruptions -> @tfl_service.disruptions(statuses)
+      end
+
+    to_text(mode, filtered_statuses)
   end
+
+  defp to_text(mode, statuses) when is_list(statuses) do
+    statuses
+    |> Enum.map(fn status -> to_text(mode, status) end)
+    |> Enum.join("\n")
+  end
+  defp to_text(:disruptions, {name, status, description}), do: ~s(#{name}: #{status} - #{description})
+  defp to_text(:summary, {name, status, _}), do: ~s(#{name}: #{status})
 end

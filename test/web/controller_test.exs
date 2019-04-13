@@ -9,7 +9,7 @@ defmodule Londibot.ControllerTest do
   test "fetches and formats all line statuses" do
     setup_tfl_mock()
 
-    assert Controller.report_all == "Victoria: Good Service"
+    assert Controller.report_all(:summary) == "Victoria: Good Service"
   end
 
   test "formats line statuses as a report" do
@@ -18,7 +18,7 @@ defmodule Londibot.ControllerTest do
       {"Circle", "Minor Delays", "Due to blablabla"}
     ]
 
-    result = Controller.report(statuses)
+    result = Controller.report(:summary, statuses)
 
     assert result ==
     """
@@ -34,7 +34,7 @@ defmodule Londibot.ControllerTest do
       {"Circle", "Minor Delays", "Due to blablabla"}
     ]
 
-    result = Controller.report({:disruptions, statuses})
+    result = Controller.report(:disruptions, statuses)
 
     assert result ==
       """
