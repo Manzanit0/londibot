@@ -27,11 +27,27 @@ defmodule Londibot.ControllerTest do
     """
   end
 
+  test "formats disruptions as a report" do
+    setup_tfl_mock()
+    statuses = [
+      {"Victoria", "Good Service", nil},
+      {"Circle", "Minor Delays", "Due to blablabla"}
+    ]
+
+    result = Controller.report({:disruptions, statuses})
+
+    assert result ==
+      """
+    Circle: Minor Delays - Due to blablabla\
+    """
+  end
+
   defp setup_tfl_mock do
     tfl_service = Application.get_env(:londibot, :tfl_service)
 
     tfl_service
     |> expect(:lines, fn -> ["Victoria"] end)
     |> expect(:status, fn _ -> [{"Victoria", "Good Service", nil}] end)
+    |> expect(:disruptions, fn _ -> [{"Circle", "Minor Delays", "Due to blablabla"}] end)
   end
 end
