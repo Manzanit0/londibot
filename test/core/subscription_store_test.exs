@@ -1,30 +1,20 @@
 defmodule Londibot.SubscriptionStoreTest do
-  use ExUnit.Case
-  doctest Londibot.SubscriptionStore
+  use ExUnit.Case, async: :true
 
   alias Londibot.SubscriptionStore
-  alias Londibot.Subscription
 
-  setup do
-    {:ok, pid, id} = SubscriptionStore.start_link(%Subscription{channel_id: "12345"})
-    {:ok, server_pid: pid, subscription_id: id}
+  test "can save multiple subscriptions" do
+    SubscriptionStore.start_link(%{id: 55})
+    SubscriptionStore.save(%{id: 33})
+
+    assert %{id: 55} == SubscriptionStore.fetch(55)
+    assert %{id: 33} == SubscriptionStore.fetch(33)
   end
 
-  test "retrieves the current subscription state", %{subscription_id: id} do
-    {:ok, subscription} = SubscriptionStore.fetch(id)
-    assert "12345" == subscription.channel_id
-  end
+  test "can update an existing subscription" do
+    SubscriptionStore.start_link(%{id: 55})
+    SubscriptionStore.save(%{id: 55, property: "value"})
 
-  test "saves new subscription status", %{subscription_id: id} do
-    {:ok, id, _subscription} =
-      %Subscription{channel_id: "6789"}
-      |> SubscriptionStore.save(id)
-
-    {:ok, subscription} = SubscriptionStore.fetch(id)
-    assert subscription.channel_id == "6789"
-  end
-
-  test "Subscription store exits upon non-existent pid" do
-    assert {:error, "Invalid id"} == SubscriptionStore.fetch(9999)
+    assert %{id: 55, property: "value"} == SubscriptionStore.fetch(55)
   end
 end
