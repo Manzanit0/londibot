@@ -17,4 +17,11 @@ defmodule Londibot.SubscriptionStoreTest do
 
     assert %{id: 55, property: "value"} == SubscriptionStore.fetch(55)
   end
+
+  test "retrieves all subscriptions" do
+    SubscriptionStore.start_link(%{id: 55, property: "55"})
+    SubscriptionStore.save(%{id: 33, property: "33"})
+
+    assert [%{id: 55, property: "55"}, %{id: 33, property: "33"}] == SubscriptionStore.all
+  end
 end

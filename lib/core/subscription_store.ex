@@ -5,8 +5,12 @@ defmodule Londibot.SubscriptionStore do
     Agent.start_link(fn -> [initial_subscription] end, name: __MODULE__)
   end
 
-  def fetch(id) when is_integer(id) do
+  def all do
     Agent.get(__MODULE__, & &1)
+  end
+
+  def fetch(id) when is_integer(id) do
+    all
     |> Enum.find(fn subscription -> subscription.id == id end)
   end
 
