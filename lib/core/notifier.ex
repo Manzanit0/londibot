@@ -16,3 +16,7 @@ defmodule Londibot.Notifier do
    |> HTTPoison.post!("") # Empty body.
  end
 end
+
+defmodule Londibot.Notification do
+  defstruct [:message, :channel_id]
+end
