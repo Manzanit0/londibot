@@ -1,8 +1,24 @@
+defmodule Londibot.Subscription do
+  defstruct id: nil,
+            channel_id: nil,
+            tfl_lines: []
+end
+
+defmodule Londibot.StoreBehaviour do
+  @callback all() :: list
+  @callback fetch(id :: integer) :: list
+  @callback save(subscription :: map) :: any
+end
+
 defmodule Londibot.SubscriptionStore do
   use Agent
 
-  def start_link(initial_subscription) do
-    Agent.start_link(fn -> [initial_subscription] end, name: __MODULE__)
+  alias Londibot.Subscription
+
+  @behaviour Londibot.StoreBehaviour
+
+  def start_link(s = %Subscription{}) do
+    Agent.start_link(fn -> [s] end, name: __MODULE__)
   end
 
   def all do
@@ -14,11 +30,11 @@ defmodule Londibot.SubscriptionStore do
     |> Enum.find(fn subscription -> subscription.id == id end)
   end
 
-  def save(subscription) do
-    Agent.update(__MODULE__, &(upsert(&1, subscription)))
+  def save(s = %Subscription{}) do
+    Agent.update(__MODULE__, &(upsert(&1, s)))
   end
 
-  defp upsert([], subscription), do: [subscription]
-  defp upsert([h = %{id: id}|t], s = %{id: id}), do: [s|t]
-  defp upsert([h|t], subscription), do: [h|upsert(t, subscription)]
+  defp upsert([], s = %Subscription{}), do: [s]
+  defp upsert([%{id: id}|t], s = %Subscription{id: id}), do: [s|t]
+  defp upsert([h|t], s = %Subscription{}), do: [h|upsert(t, s)]
 end

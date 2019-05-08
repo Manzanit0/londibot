@@ -1,27 +1,31 @@
 defmodule Londibot.SubscriptionStoreTest do
   use ExUnit.Case, async: :true
 
+  alias Londibot.Subscription
   alias Londibot.SubscriptionStore
 
   test "can save multiple subscriptions" do
-    SubscriptionStore.start_link(%{id: 55})
-    SubscriptionStore.save(%{id: 33})
+    SubscriptionStore.start_link(%Subscription{id: 55})
+    SubscriptionStore.save(%Subscription{id: 33})
 
-    assert %{id: 55} == SubscriptionStore.fetch(55)
-    assert %{id: 33} == SubscriptionStore.fetch(33)
+    assert %Subscription{id: 55} == SubscriptionStore.fetch(55)
+    assert %Subscription{id: 33} == SubscriptionStore.fetch(33)
   end
 
   test "can update an existing subscription" do
-    SubscriptionStore.start_link(%{id: 55})
-    SubscriptionStore.save(%{id: 55, property: "value"})
+    SubscriptionStore.start_link(%Subscription{id: 55})
+    SubscriptionStore.save(%Subscription{id: 55, channel_id: "value"})
 
-    assert %{id: 55, property: "value"} == SubscriptionStore.fetch(55)
+    assert %Subscription{id: 55, channel_id: "value"} == SubscriptionStore.fetch(55)
   end
 
   test "retrieves all subscriptions" do
-    SubscriptionStore.start_link(%{id: 55, property: "55"})
-    SubscriptionStore.save(%{id: 33, property: "33"})
+    SubscriptionStore.start_link(%Subscription{id: 55, channel_id: "55"})
+    SubscriptionStore.save(%Subscription{id: 33, channel_id: "33"})
 
-    assert [%{id: 55, property: "55"}, %{id: 33, property: "33"}] == SubscriptionStore.all
+    expected = [
+      %Subscription{id: 55, channel_id: "55"},
+      %Subscription{id: 33, channel_id: "33"}]
+    assert expected  == SubscriptionStore.all
   end
 end
