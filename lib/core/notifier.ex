@@ -1,4 +1,10 @@
+defmodule Londibot.NotifierBehaviour do
+  @callback send(String.t, String.t) :: String.t
+end
+
 defmodule Londibot.Notifier do
+  @behaviour Londibot.NotifierBehaviour
+
   @slack_url "https://slack.com/api/chat.postMessage"
   @slack_token Application.get_env(:londibot, :slack_token)
 
