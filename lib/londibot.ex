@@ -5,7 +5,7 @@ defmodule Londibot do
     import Supervisor.Spec, warn: false
 
     children = [
-      {Plug.Cowboy, scheme: :http, plug: Londibot.Router, options: [port: 8085]},
+      {Plug.Cowboy, scheme: :http, plug: Londibot.Router, options: [port: 8090]},
       supervisor(Registry, [:unique, :subscriptions_registry])
     ]
 
