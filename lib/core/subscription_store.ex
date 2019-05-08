@@ -1,7 +1,5 @@
 defmodule Londibot.Subscription do
-  defstruct id: nil,
-            channel_id: nil,
-            tfl_lines: []
+  defstruct [:id, :channel_id, :tfl_lines]
 end
 
 defmodule Londibot.StoreBehaviour do
