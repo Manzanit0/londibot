@@ -52,4 +52,20 @@ defmodule EnvironmentSetupTest do
              tfl_lines: ["circle", "bakerloo"]
            }
   end
+
+  test "adds a disruption as parameters" do
+    %{disruptions: disruptions} =
+      EnvironmentSetup.new()
+      |> EnvironmentSetup.with_disruption("victoria", "Minor delays", "because...")
+
+    assert disruptions == [{"victoria", "Minor delays", "because..."}]
+  end
+
+  test "adds a disruption as tuple" do
+    %{disruptions: disruptions} =
+      EnvironmentSetup.new()
+      |> EnvironmentSetup.with_disruption({"victoria", "Minor delays", "because..."})
+
+    assert disruptions == [{"victoria", "Minor delays", "because..."}]
+  end
 end

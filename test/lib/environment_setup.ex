@@ -9,13 +9,15 @@ defmodule EnvironmentSetup do
     %EnvironmentSetup{disruptions: [], subscriptions: []}
   end
 
-  def with_subscription(env_setup, id, channel_id, lines) do
-    with_subscription(env_setup, %Subscription{id: id, channel_id: channel_id, tfl_lines: lines})
-  end
+  def with_subscription(env_setup, id, channel_id, lines),
+    do: with_subscription(env_setup, %Subscription{id: id, channel_id: channel_id, tfl_lines: lines})
+  def with_subscription(%EnvironmentSetup{subscriptions: subscriptions}, s = %Subscription{}),
+    do: %EnvironmentSetup{subscriptions: [s | subscriptions]}
 
-  def with_subscription(%EnvironmentSetup{subscriptions: subscriptions}, s = %Subscription{}) do
-    %EnvironmentSetup{subscriptions: [s | subscriptions]}
-  end
+  def with_disruption(env_setup, line, status, description),
+    do: with_disruption(env_setup, {line, status, description})
+  def with_disruption(%EnvironmentSetup{disruptions: disruptions}, disruption),
+    do: %EnvironmentSetup{disruptions: [disruption | disruptions]}
 
   def create(%EnvironmentSetup{subscriptions: subscriptions}) do
     # Since the mocks set here are for all the tests throughout the
