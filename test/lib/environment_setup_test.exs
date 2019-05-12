@@ -77,15 +77,13 @@ defmodule EnvironmentSetupTest do
 
     tfl_service = Application.get_env(:londibot, :tfl_service)
     lines = tfl_service.lines()
-    assert lines == ["victoria", "circle", "bakerloo"]
+    assert length(lines) == 15
 
     statuses = tfl_service.status(lines)
 
-    assert statuses == [
-             {"victoria", "Minor delays", "because..."},
-             {"circle", "Line closed", "boom!"},
-             {"bakerloo", "Good Service", ""}
-           ]
+    assert Enum.member?(statuses, {"victoria", "Minor delays", "because..."})
+    assert Enum.member?(statuses, {"circle", "Line closed", "boom!"})
+    assert Enum.member?(statuses, {"bakerloo", "Good Service", ""})
 
     disruptions = tfl_service.disruptions(statuses)
 
@@ -113,11 +111,11 @@ defmodule EnvironmentSetupTest do
     tfl_service = Application.get_env(:londibot, :tfl_service)
     lines = tfl_service.lines()
     statuses = tfl_service.status(lines)
+    disruptions = tfl_service.disruptions(statuses)
 
-    assert statuses == [
-             {"victoria", "Minor delays", "because..."},
+    assert disruptions == [
              {"circle", "Line closed", "boom!"},
-             {"bakerloo", "Good Service", ""}
+             {"victoria", "Minor delays", "because..."}
            ]
   end
 end

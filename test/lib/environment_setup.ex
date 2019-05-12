@@ -5,6 +5,23 @@ defmodule EnvironmentSetup do
 
   defstruct disruptions: [], subscriptions: []
 
+  @lines [
+    "circle",
+    "district",
+    "dlr",
+    "hammersmith & city",
+    "london overground",
+    "metropolitan",
+    "waterloo & city",
+    "bakerloo",
+    "central",
+    "jubilee",
+    "northen",
+    "picadilly",
+    "victoria",
+    "tfl rail",
+    "tram"]
+
   def new, do: %EnvironmentSetup{}
 
   def with_subscription(env_setup, id, channel_id, line) when is_binary(line),
@@ -32,11 +49,10 @@ defmodule EnvironmentSetup do
     |> expect(:all, 99, fn -> subscriptions end)
     |> expect(:fetch, 99, fn id -> Enum.find(subscriptions, &(&1.id == id)) end)
 
-    lines = ["victoria", "circle", "bakerloo"]
-    statuses = statuses_with_disruptions(lines, disruptions)
+    statuses = statuses_with_disruptions(@lines, disruptions)
 
     Application.get_env(:londibot, :tfl_service)
-    |> expect(:lines, 99, fn -> lines end)
+    |> expect(:lines, 99, fn -> @lines end)
     |> expect(:status, 99, fn _ -> statuses end)
     |> expect(:disruptions, 99, fn _ -> disruptions end)
   end
