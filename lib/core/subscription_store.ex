@@ -24,7 +24,7 @@ defmodule Londibot.SubscriptionStore do
   end
 
   def fetch(id) when is_integer(id) do
-    all
+    all()
     |> Enum.find(fn subscription -> subscription.id == id end)
   end
 
