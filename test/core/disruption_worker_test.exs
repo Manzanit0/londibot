@@ -1,15 +1,13 @@
 defmodule Londibot.DisruptionWorkerTest do
   use ExUnit.Case, async: true
 
-  import Mox
-
   alias Londibot.DisruptionWorker
   alias Londibot.Notification
 
   test "generates notifications for two subscriptions to the same disruption" do
     EnvironmentSetup.new()
-    |> EnvironmentSetup.with_subscription(2, "456RTY", ["Victoria"])
-    |> EnvironmentSetup.with_subscription(1, "123QWE", ["Victoria"])
+    |> EnvironmentSetup.with_subscription(2, "456RTY", "Victoria")
+    |> EnvironmentSetup.with_subscription(1, "123QWE", "Victoria")
     |> EnvironmentSetup.with_disruption("Victoria", "Bad Service", "...")
     |> EnvironmentSetup.create()
 
@@ -25,8 +23,8 @@ defmodule Londibot.DisruptionWorkerTest do
 
   test "generates notifications for two subscriptions to different disruptions" do
     EnvironmentSetup.new()
-    |> EnvironmentSetup.with_subscription(2, "456RTY", ["Victoria"])
-    |> EnvironmentSetup.with_subscription(1, "123QWE", ["Circle"])
+    |> EnvironmentSetup.with_subscription(2, "456RTY", "Victoria")
+    |> EnvironmentSetup.with_subscription(1, "123QWE", "Circle")
     |> EnvironmentSetup.with_disruption("Victoria", "Bad Service", "...")
     |> EnvironmentSetup.create()
 
@@ -42,8 +40,8 @@ defmodule Londibot.DisruptionWorkerTest do
 
   test "prompts TFL for disruptions and generates notifications" do
     EnvironmentSetup.new()
-    |> EnvironmentSetup.with_subscription(2, "456RTY", ["Victoria"])
-    |> EnvironmentSetup.with_subscription(1, "123QWE", ["Circle"])
+    |> EnvironmentSetup.with_subscription(2, "456RTY", "Victoria")
+    |> EnvironmentSetup.with_subscription(1, "123QWE", "Circle")
     |> EnvironmentSetup.with_disruption("Circle", "Minor Delays", "...")
     |> EnvironmentSetup.create()
 
