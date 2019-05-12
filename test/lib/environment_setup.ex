@@ -5,6 +5,12 @@ defmodule EnvironmentSetup do
 
   defstruct disruptions: [], subscriptions: []
 
+  # Since the mocks set are for all the tests throughout the project
+  # and the project doesn't use the 'verify_on_exit' mechanic,
+  # I've decided to set a high number (99) so the functions can be called
+  # as much as needed.
+  @expected_executions 99
+
   @lines [
     "circle",
     "district",
@@ -20,7 +26,8 @@ defmodule EnvironmentSetup do
     "picadilly",
     "victoria",
     "tfl rail",
-    "tram"]
+    "tram"
+  ]
 
   def new, do: %EnvironmentSetup{}
 
@@ -41,29 +48,32 @@ defmodule EnvironmentSetup do
     do: %EnvironmentSetup{e | disruptions: [disruption | disruptions]}
 
   def create(%EnvironmentSetup{subscriptions: subscriptions, disruptions: disruptions}) do
-    # Since the mocks set here are for all the tests throughout the
-    # project, and the project doesn't use the 'verify_on_exit' mechanic,
-    # I've decided to set a high number (99) so the functions can be called
-    # as much as needed.
-    Application.get_env(:londibot, :subscription_store)
-    |> expect(:all, 99, fn -> subscriptions end)
-    |> expect(:fetch, 99, fn id -> Enum.find(subscriptions, &(&1.id == id)) end)
+    setup_subscription_store(subscriptions)
+    setup_tfl_service(disruptions)
+  end
 
+  defp setup_subscription_store(subscriptions) do
+    Application.get_env(:londibot, :subscription_store)
+    |> expect(:all, @expected_executions, fn -> subscriptions end)
+    |> expect(:fetch, @expected_executions, fn id -> Enum.find(subscriptions, &(&1.id == id)) end)
+  end
+
+  defp setup_tfl_service(disruptions) do
     statuses = statuses_with_disruptions(@lines, disruptions)
 
     Application.get_env(:londibot, :tfl_service)
-    |> expect(:lines, 99, fn -> @lines end)
-    |> expect(:status, 99, fn _ -> statuses end)
-    |> expect(:disruptions, 99, fn _ -> disruptions end)
+    |> expect(:lines, @expected_executions, fn -> @lines end)
+    |> expect(:status, @expected_executions, fn _ -> statuses end)
+    |> expect(:disruptions, @expected_executions, fn _ -> disruptions end)
   end
-
-  defp statuses_with_disruptions(lines, nil), do: statuses_with_disruptions(lines, [])
 
   defp statuses_with_disruptions(lines, disruptions) do
     for line <- lines do
-      Enum.find(disruptions, {line, "Good Service", ""}, fn {name, _, _} ->
-        String.downcase(name) == line
-      end)
+      default = {line, "Good Service", ""}
+      Enum.find(disruptions, default, fn disruption -> same_line?(disruption, line) end)
     end
   end
+
+  defp same_line?({disrupted_line, _, _}, line),
+    do: String.downcase(disrupted_line) == String.downcase(line)
 end
