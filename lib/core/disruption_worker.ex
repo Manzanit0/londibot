@@ -17,7 +17,7 @@ defmodule Londibot.DisruptionWorker do
 
     for {line, status, _} <- disruptions,
         %Subscription{channel_id: channel, tfl_lines: lines} <- subscriptions,
-        Enum.any?(lines, fn x -> x == line end),
+        Enum.any?(lines, fn x -> String.downcase(x) == String.downcase(line) end),
         do: %Notification{message: ~s(#{line}: #{status}), channel_id: channel}
   end
 end
