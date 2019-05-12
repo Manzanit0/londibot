@@ -3,23 +3,22 @@ defmodule EnvironmentSetup do
 
   alias Londibot.Subscription
 
-  defstruct [:disruptions, :subscriptions]
+  defstruct disruptions: [], subscriptions: []
 
-  def new do
-    %EnvironmentSetup{disruptions: [], subscriptions: []}
-  end
+  def new, do: %EnvironmentSetup{}
 
   def with_subscription(env_setup, id, channel_id, lines),
-    do: with_subscription(env_setup, %Subscription{id: id, channel_id: channel_id, tfl_lines: lines})
+    do:
+      with_subscription(env_setup, %Subscription{id: id, channel_id: channel_id, tfl_lines: lines})
 
-  def with_subscription(%EnvironmentSetup{subscriptions: subscriptions}, s = %Subscription{}),
-    do: %EnvironmentSetup{subscriptions: [s | subscriptions]}
+  def with_subscription(e = %EnvironmentSetup{subscriptions: subscriptions}, s = %Subscription{}),
+    do: %EnvironmentSetup{e | subscriptions: [s | subscriptions]}
 
   def with_disruption(env_setup, line, status, description),
     do: with_disruption(env_setup, {line, status, description})
 
-  def with_disruption(%EnvironmentSetup{disruptions: disruptions}, disruption),
-    do: %EnvironmentSetup{disruptions: [disruption | disruptions]}
+  def with_disruption(e = %EnvironmentSetup{disruptions: disruptions}, disruption),
+    do: %EnvironmentSetup{e | disruptions: [disruption | disruptions]}
 
   def create(%EnvironmentSetup{subscriptions: subscriptions, disruptions: disruptions}) do
     # Since the mocks set here are for all the tests throughout the
@@ -31,7 +30,7 @@ defmodule EnvironmentSetup do
     |> expect(:fetch, 99, fn id -> Enum.find(subscriptions, &(&1.id == id)) end)
 
     lines = ["victoria", "circle", "bakerloo"]
-    statuses = replace_disruptions(lines, disruptions)
+    statuses = statuses_with_disruptions(lines, disruptions)
 
     Application.get_env(:londibot, :tfl_service)
     |> expect(:lines, 99, fn -> lines end)
@@ -39,12 +38,13 @@ defmodule EnvironmentSetup do
     |> expect(:disruptions, 99, fn _ -> disruptions end)
   end
 
-  defp replace_disruptions(lines, nil), do: replace_disruptions(lines, [])
+  defp statuses_with_disruptions(lines, nil), do: statuses_with_disruptions(lines, [])
 
-  defp replace_disruptions(lines, disruptions) do
+  defp statuses_with_disruptions(lines, disruptions) do
     for line <- lines do
-      disruption = Enum.find(disruptions, fn {name, _, _} -> name == line end)
-      if disruption, do: disruption, else: {line, "Good Service", ""}
+        Enum.find(disruptions, {line, "Good Service", ""}, fn {name, _, _} ->
+          String.downcase(name) == line
+        end)
     end
   end
 end
