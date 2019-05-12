@@ -94,4 +94,30 @@ defmodule EnvironmentSetupTest do
              {"victoria", "Minor delays", "because..."}
            ]
   end
+
+  test "adds both subscriptions and disruptions to the environment" do
+    EnvironmentSetup.new()
+    |> EnvironmentSetup.with_subscription("5", "ASD890", ["victoria"])
+    |> EnvironmentSetup.with_subscription("9", "123QWE", ["circle", "bakerloo"])
+    |> EnvironmentSetup.with_disruption("victoria", "Minor delays", "because...")
+    |> EnvironmentSetup.with_disruption("circle", "Line closed", "boom!")
+    |> EnvironmentSetup.create()
+
+    store = Application.get_env(:londibot, :subscription_store)
+
+    assert store.all() == [
+             %Subscription{id: "9", channel_id: "123QWE", tfl_lines: ["circle", "bakerloo"]},
+             %Subscription{id: "5", channel_id: "ASD890", tfl_lines: ["victoria"]}
+           ]
+
+    tfl_service = Application.get_env(:londibot, :tfl_service)
+    lines = tfl_service.lines()
+    statuses = tfl_service.status(lines)
+
+    assert statuses == [
+             {"victoria", "Minor delays", "because..."},
+             {"circle", "Line closed", "boom!"},
+             {"bakerloo", "Good Service", ""}
+           ]
+  end
 end
