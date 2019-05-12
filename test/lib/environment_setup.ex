@@ -7,6 +7,9 @@ defmodule EnvironmentSetup do
 
   def new, do: %EnvironmentSetup{}
 
+  def with_subscription(env_setup, id, channel_id, line) when is_binary(line),
+    do: with_subscription(env_setup, id, channel_id, [line])
+
   def with_subscription(env_setup, id, channel_id, lines),
     do:
       with_subscription(env_setup, %Subscription{id: id, channel_id: channel_id, tfl_lines: lines})
@@ -42,9 +45,9 @@ defmodule EnvironmentSetup do
 
   defp statuses_with_disruptions(lines, disruptions) do
     for line <- lines do
-        Enum.find(disruptions, {line, "Good Service", ""}, fn {name, _, _} ->
-          String.downcase(name) == line
-        end)
+      Enum.find(disruptions, {line, "Good Service", ""}, fn {name, _, _} ->
+        String.downcase(name) == line
+      end)
     end
   end
 end
