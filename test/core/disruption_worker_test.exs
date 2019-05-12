@@ -8,16 +8,11 @@ defmodule Londibot.DisruptionWorkerTest do
   alias Londibot.Notification
 
   test "generates notifications for two subscriptions to the same disruption" do
-    Application.get_env(:londibot, :subscription_store)
-    |> expect(
-      :all,
-      fn ->
-        [
-          %Subscription{id: 1, channel_id: "123QWE", tfl_lines: ["Victoria"]},
-          %Subscription{id: 1, channel_id: "456RTY", tfl_lines: ["Victoria"]}
-        ]
-      end
-    )
+    EnvironmentSetup.new()
+    |> EnvironmentSetup.with_subscription(2, "456RTY", ["Victoria"])
+    |> EnvironmentSetup.with_subscription(1, "123QWE", ["Victoria"])
+    |> EnvironmentSetup.with_disruption("Victoria", "Bad Service", "...")
+    |> EnvironmentSetup.create()
 
     notifications =
       [{"Victoria", "Bad Service", "..."}]
