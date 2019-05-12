@@ -27,7 +27,7 @@ defmodule EnvironmentSetupTest do
     assert subscriptions == [s]
   end
 
-  test "creates the environment mocks based on the setup struct" do
+  test "creates the subscription store mock based on the setup struct" do
     EnvironmentSetup.new()
     |> EnvironmentSetup.with_subscription("5", "ASD890", ["victoria"])
     |> EnvironmentSetup.with_subscription("9", "123QWE", ["circle", "bakerloo"])
@@ -67,5 +67,31 @@ defmodule EnvironmentSetupTest do
       |> EnvironmentSetup.with_disruption({"victoria", "Minor delays", "because..."})
 
     assert disruptions == [{"victoria", "Minor delays", "because..."}]
+  end
+
+  test "creates the tfl service mock based on the setup struct" do
+    EnvironmentSetup.new()
+    |> EnvironmentSetup.with_disruption("victoria", "Minor delays", "because...")
+    |> EnvironmentSetup.with_disruption("circle", "Line closed", "boom!")
+    |> EnvironmentSetup.create()
+
+    tfl_service = Application.get_env(:londibot, :tfl_service)
+    lines = tfl_service.lines()
+    assert lines == ["victoria", "circle", "bakerloo"]
+
+    statuses = tfl_service.status(lines)
+
+    assert statuses == [
+             {"victoria", "Minor delays", "because..."},
+             {"circle", "Line closed", "boom!"},
+             {"bakerloo", "Good Service", ""}
+           ]
+
+    disruptions = tfl_service.disruptions(statuses)
+
+    assert disruptions == [
+             {"circle", "Line closed", "boom!"},
+             {"victoria", "Minor delays", "because..."}
+           ]
   end
 end
