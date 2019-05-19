@@ -1,21 +1,17 @@
 # Londibot
 
-**TODO: Add description**
+[![Build Status](https://travis-ci.org/Manzanit0/londibot.svg?branch=master)](https://travis-ci.org/Manzanit0/londibot)
+[![Coverage Status](https://coveralls.io/repos/github/Manzanit0/londibot/badge.svg?branch=master)](https://coveralls.io/github/Manzanit0/londibot?branch=master)
 
-## Installation
+Slack bot which reports the status of London TFL services.
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `londibot` to your list of dependencies in `mix.exs`:
+## Getting started
 
-```elixir
-def deps do
-  [
-    {:londibot, "~> 0.1.0"}
-  ]
-end
+Simply clone the repository and run:
+
+```
+mix deps
+mix run --no-halt
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/londibot](https://hexdocs.pm/londibot).
-
+To run the tests, run: `mix test`.
