@@ -8,6 +8,7 @@ defmodule Londibot.MixProject do
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      test_coverage: [tool: ExCoveralls],
       elixirc_paths: elixirc_paths(Mix.env),
     ]
   end
@@ -21,10 +22,11 @@ defmodule Londibot.MixProject do
 
   defp deps do
     [
-      {:mox, "~> 0.5.0"},
       {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 1.4"},
-      {:poison, "~> 4.0.1"}
+      {:poison, "~> 4.0.1"},
+      {:mox, "~> 0.5.0", only: :test},
+      {:excoveralls, "~> 0.11.1", only: :test}
     ]
   end
 
