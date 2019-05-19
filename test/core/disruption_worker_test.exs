@@ -5,11 +5,11 @@ defmodule Londibot.DisruptionWorkerTest do
   alias Londibot.Notification
 
   test "generates notifications for two subscriptions to the same disruption" do
-    EnvironmentSetup.new()
-    |> EnvironmentSetup.with_subscription(2, "456RTY", "Victoria")
-    |> EnvironmentSetup.with_subscription(1, "123QWE", "Victoria")
-    |> EnvironmentSetup.with_disruption("Victoria", "Bad Service", "...")
-    |> EnvironmentSetup.create()
+    World.new()
+    |> World.with_subscription(2, "456RTY", "Victoria")
+    |> World.with_subscription(1, "123QWE", "Victoria")
+    |> World.with_disruption("Victoria", "Bad Service", "...")
+    |> World.create()
 
     notifications =
       [{"Victoria", "Bad Service", "..."}]
@@ -22,11 +22,11 @@ defmodule Londibot.DisruptionWorkerTest do
   end
 
   test "generates notifications for two subscriptions to different disruptions" do
-    EnvironmentSetup.new()
-    |> EnvironmentSetup.with_subscription(2, "456RTY", "Victoria")
-    |> EnvironmentSetup.with_subscription(1, "123QWE", "Circle")
-    |> EnvironmentSetup.with_disruption("Victoria", "Bad Service", "...")
-    |> EnvironmentSetup.create()
+    World.new()
+    |> World.with_subscription(2, "456RTY", "Victoria")
+    |> World.with_subscription(1, "123QWE", "Circle")
+    |> World.with_disruption("Victoria", "Bad Service", "...")
+    |> World.create()
 
     notifications =
       [{"Victoria", "Minor delays", "..."}, {"Circle", "Minor delays", "..."}]
@@ -39,11 +39,11 @@ defmodule Londibot.DisruptionWorkerTest do
   end
 
   test "prompts TFL for disruptions and generates notifications" do
-    EnvironmentSetup.new()
-    |> EnvironmentSetup.with_subscription(2, "456RTY", "Victoria")
-    |> EnvironmentSetup.with_subscription(1, "123QWE", "Circle")
-    |> EnvironmentSetup.with_disruption("Circle", "Minor Delays", "...")
-    |> EnvironmentSetup.create()
+    World.new()
+    |> World.with_subscription(2, "456RTY", "Victoria")
+    |> World.with_subscription(1, "123QWE", "Circle")
+    |> World.with_disruption("Circle", "Minor Delays", "...")
+    |> World.create()
 
     notifications = DisruptionWorker.disruption_notifications()
 

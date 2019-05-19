@@ -1,4 +1,4 @@
-defmodule EnvironmentSetup do
+defmodule World do
   import Mox
 
   alias Londibot.Subscription
@@ -29,7 +29,7 @@ defmodule EnvironmentSetup do
     "tram"
   ]
 
-  def new, do: %EnvironmentSetup{}
+  def new, do: %World{}
 
   def with_subscription(env_setup, id, channel_id, line) when is_binary(line),
     do: with_subscription(env_setup, id, channel_id, [line])
@@ -38,16 +38,16 @@ defmodule EnvironmentSetup do
     do:
       with_subscription(env_setup, %Subscription{id: id, channel_id: channel_id, tfl_lines: lines})
 
-  def with_subscription(e = %EnvironmentSetup{subscriptions: subscriptions}, s = %Subscription{}),
-    do: %EnvironmentSetup{e | subscriptions: [s | subscriptions]}
+  def with_subscription(e = %World{subscriptions: subscriptions}, s = %Subscription{}),
+    do: %World{e | subscriptions: [s | subscriptions]}
 
   def with_disruption(env_setup, line, status, description),
     do: with_disruption(env_setup, {line, status, description})
 
-  def with_disruption(e = %EnvironmentSetup{disruptions: disruptions}, disruption),
-    do: %EnvironmentSetup{e | disruptions: [disruption | disruptions]}
+  def with_disruption(e = %World{disruptions: disruptions}, disruption),
+    do: %World{e | disruptions: [disruption | disruptions]}
 
-  def create(%EnvironmentSetup{subscriptions: subscriptions, disruptions: disruptions}) do
+  def create(%World{subscriptions: subscriptions, disruptions: disruptions}) do
     setup_subscription_store(subscriptions)
     setup_tfl_service(disruptions)
   end
