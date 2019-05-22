@@ -49,4 +49,36 @@ defmodule Londibot.DisruptionWorkerTest do
 
     assert notifications == [%Notification{message: "Circle: Minor Delays", channel_id: "123QWE"}]
   end
+
+  test "sends notifications based on existing disruptions" do
+    World.new()
+    |> World.with_subscription(2, "456RTY", "Victoria")
+    |> World.with_subscription(1, "123QWE", "Circle")
+    |> World.with_disruption("Circle", "Minor Delays", "...")
+    |> World.with_notifications(1)
+    |> World.create()
+
+    DisruptionWorker.run(forever: false)
+
+    Mox.verify!(Londibot.NotifierMock)
+  end
+
+  test "sends notifications asynchronously" do
+    World.new()
+    |> World.with_subscription(2, "456RTY", "Victoria")
+    |> World.with_subscription(1, "123QWE", "Circle")
+    |> World.with_subscription(3, "123QWE", "Circle")
+    |> World.with_disruption("Circle", "Minor Delays", "...")
+    |> World.with_notifications(2)
+    |> World.create()
+
+    DisruptionWorker.start_link(forever: false)
+
+    # Since supervised tasks cannot be awaited, I felt it was better
+    # to sleep the thread 1000 ms to wait for it to finish rather than
+    # not testing it.
+    :timer.sleep(1000)
+
+    Mox.verify!(Londibot.NotifierMock)
+  end
 end

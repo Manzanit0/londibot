@@ -3,7 +3,7 @@ defmodule World do
 
   alias Londibot.Subscription
 
-  defstruct disruptions: [], subscriptions: []
+  defstruct disruptions: [], subscriptions: [], notifications: 0
 
   # Since the mocks set are for all the tests throughout the project
   # and the project doesn't use the 'verify_on_exit' mechanic,
@@ -47,9 +47,18 @@ defmodule World do
   def with_disruption(e = %World{disruptions: disruptions}, disruption),
     do: %World{e | disruptions: [disruption | disruptions]}
 
-  def create(%World{subscriptions: subscriptions, disruptions: disruptions}) do
+  def with_notifications(e = %World{}, notifications),
+    do: %World{e | notifications: notifications}
+
+  def create(%World{subscriptions: subscriptions, disruptions: disruptions, notifications: n}) do
     setup_subscription_store(subscriptions)
     setup_tfl_service(disruptions)
+    setup_notifier(n)
+  end
+
+  def setup_notifier(expected_notifications) do
+    Application.get_env(:londibot, :notifier)
+    |> expect(:send, expected_notifications, fn x -> x end)
   end
 
   defp setup_subscription_store(subscriptions) do
