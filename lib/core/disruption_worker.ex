@@ -13,11 +13,19 @@ defmodule Londibot.DisruptionWorker do
   end
 
   def create_notifications(disruptions) do
-    subscriptions = @subscription_store.all()
-
-    for {line, status, _} <- disruptions,
-        %Subscription{channel_id: channel, tfl_lines: lines} <- subscriptions,
-        Enum.any?(lines, fn x -> String.downcase(x) == String.downcase(line) end),
-        do: %Notification{message: ~s(#{line}: #{status}), channel_id: channel}
+    for {disrupted_line, status, _} <- disruptions,
+        %Subscription{channel_id: channel, tfl_lines: lines} <- @subscription_store.all(),
+        subscribed?(lines, disrupted_line) do
+      create_notification(disrupted_line, status, channel)
+    end
   end
+
+  defp subscribed?(subscribed_lines, disrupted_line) do
+    Enum.any?(subscribed_lines, fn x ->
+      String.downcase(x) == String.downcase(disrupted_line)
+    end)
+  end
+
+  defp create_notification(disrupted_line, status, channel),
+    do: %Notification{message: ~s(#{disrupted_line}: #{status}), channel_id: channel}
 end
