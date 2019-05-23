@@ -15,8 +15,10 @@ defmodule Londibot.SubscriptionStore do
 
   @behaviour Londibot.StoreBehaviour
 
-  def start_link(s = %Subscription{}) do
-    Agent.start_link(fn -> [s] end, name: __MODULE__)
+
+  def start_link(s = %Subscription{}), do: start_link([s])
+  def start_link(arg) do
+    Agent.start_link(fn -> arg end, name: __MODULE__)
   end
 
   def all do

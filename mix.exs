@@ -9,7 +9,8 @@ defmodule Londibot.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
-      elixirc_paths: elixirc_paths(Mix.env),
+      elixirc_paths: elixirc_paths(Mix.env()),
+      aliases: aliases()
     ]
   end
 
@@ -27,6 +28,12 @@ defmodule Londibot.MixProject do
       {:poison, "~> 4.0.1"},
       {:mox, "~> 0.5.0", only: :test},
       {:excoveralls, "~> 0.11.1", only: :test}
+    ]
+  end
+
+  defp aliases do
+    [
+      test: "test --no-start"
     ]
   end
 
