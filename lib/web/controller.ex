@@ -24,6 +24,6 @@ defmodule Londibot.Controller do
     |> Enum.map(fn status -> to_text(mode, status) end)
     |> Enum.join("\n")
   end
-  defp to_text(:disruptions, {name, status, description}), do: ~s(#{name}: #{status} - #{description})
+  defp to_text(:disruptions, {name, status, description}), do: ~s(#{description})
   defp to_text(:summary, {name, status, _}), do: ~s(#{name}: #{status})
 end
