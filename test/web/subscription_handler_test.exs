@@ -22,7 +22,8 @@ defmodule Londibot.Web.SubscriptionHandlerTest do
     |> World.create()
 
     message =
-      conn(:post, "/", %{"channel_id" => "123", "text" => "victoria"})
+      conn(:post, "/subscription?q=new", %{"channel_id" => "123", "text" => "victoria"})
+      |> Plug.Conn.fetch_query_params()
       |> SubscriptionHandler.handle()
 
     assert message == SubscriptionHandler.subscription_saved_message()
