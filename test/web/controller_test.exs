@@ -38,7 +38,7 @@ defmodule Londibot.ControllerTest do
 
     assert result ==
       """
-    Circle: Minor Delays - Due to blablabla\
+    Due to blablabla\
     """
   end
 
