@@ -3,19 +3,6 @@ defmodule Londibot.Web.SubscriptionHandlerTest do
   use Plug.Test
 
   alias Londibot.Web.SubscriptionHandler
-  alias Londibot.Subscription
-
-  test "subscription saved message is encoded to JSON" do
-    expected = "{\"text\":\"Subscription saved!\",\"response_type\":\"in_channel\"}"
-    assert expected == SubscriptionHandler.subscription_saved_message()
-  end
-
-  test "parses body params to subscription" do
-    body_params = %{"channel_id" => "234", "text" => "victoria,london overground"}
-
-    expected = %Subscription{channel_id: "234", tfl_lines: ["victoria", "london overground"]}
-    assert expected == SubscriptionHandler.to_subscription(body_params)
-  end
 
   test "creates subscription" do
     World.new()
@@ -26,6 +13,38 @@ defmodule Londibot.Web.SubscriptionHandlerTest do
       |> Plug.Conn.fetch_query_params()
       |> SubscriptionHandler.handle()
 
-    assert message == SubscriptionHandler.subscription_saved_message()
+    assert message == "{\"text\":\"Subscription saved!\",\"response_type\":\"in_channel\"}"
+  end
+
+  test "fetches all subscriptions" do
+    World.new()
+    |> World.with_subscription(1, "123", "victoria")
+    |> World.with_subscription(2, "123", "northern")
+    |> World.with_subscription(3, "456", "circle")
+    |> World.create()
+
+    message =
+      conn(:post, "/subscription?q=all", %{"channel_id" => "123", "text" => ""})
+      |> Plug.Conn.fetch_query_params()
+      |> SubscriptionHandler.handle()
+
+    assert message ==
+      "{\"text\":\"You are currently subscribed to: northern, victoria\",\"response_type\":\"in_channel\"}"
+  end
+
+  test "no subscriptions available upon fetch" do
+    World.new()
+    |> World.with_subscription(1, "123", "victoria")
+    |> World.with_subscription(2, "123", "northern")
+    |> World.with_subscription(3, "456", "circle")
+    |> World.create()
+
+    message =
+      conn(:post, "/subscription?q=all", %{"channel_id" => "987", "text" => ""})
+      |> Plug.Conn.fetch_query_params()
+      |> SubscriptionHandler.handle()
+
+    assert message ==
+      "{\"text\":\"You are currently not subscribed to any line\",\"response_type\":\"in_channel\"}"
   end
 end
