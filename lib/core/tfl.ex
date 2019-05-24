@@ -10,7 +10,7 @@ defmodule Londibot.TFL do
 
   def lines do
     "https://api.tfl.gov.uk/Line/Mode/tube%2Cdlr%2Coverground%2Ctflrail"
-    |> HTTPoison.get!
+    |> HTTPoison.get!(recv_timeout: 50000)
     |> Map.get(:body)
     |> Poison.decode!
     |> Enum.map(fn x -> x["id"] end)
