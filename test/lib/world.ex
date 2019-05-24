@@ -63,6 +63,7 @@ defmodule World do
 
   defp setup_subscription_store(subscriptions) do
     Application.get_env(:londibot, :subscription_store)
+    |> expect(:save, @expected_executions, fn _ -> :ok end)
     |> expect(:all, @expected_executions, fn -> subscriptions end)
     |> expect(:fetch, @expected_executions, fn id -> Enum.find(subscriptions, &(&1.id == id)) end)
   end
