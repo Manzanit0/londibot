@@ -13,12 +13,12 @@ defmodule Londibot.Router do
   post("/disruptions", do: send_resp(conn, 200, Londibot.Controller.report_all(:disruptions)))
 
   post "/subscription" do
-    message =
+    conn =
       conn
+      |> Plug.Conn.fetch_query_params()
       |> Util.with_json_headers()
-      |> SubscriptionHandler.handle()
 
-    send_resp(conn, 200, message)
+    send_resp(conn, 200, SubscriptionHandler.handle(conn))
   end
 
   match(_, do: send_resp(conn, 404, "Nothing found here!"))

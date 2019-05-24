@@ -4,8 +4,11 @@ defmodule Londibot.Web.SubscriptionHandler do
 
   @subscription_store Application.get_env(:londibot, :subscription_store)
 
-  def handle(conn = %Plug.Conn{body_params: bp}), do: handle(bp)
-  def handle(body_params) do
+  def handle(conn = %Plug.Conn{body_params: bp, query_params: qp}), do: handle(bp, qp)
+  def handle(bp = %{"channel_id" => c, "text" => t}, %{"q" => "new"}), do: process_subscription(bp)
+  def handle(%{}, %{}), do: reprompt_message()
+
+  def process_subscription(body_params) do
     body_params
     |> to_subscription()
     |> @subscription_store.save()
@@ -20,8 +23,12 @@ defmodule Londibot.Web.SubscriptionHandler do
     %Subscription{channel_id: c, tfl_lines: lines}
   end
 
-  def subscription_saved_message do
-    %{text: "Subscription saved!", response_type: "in_channel"}
+  def subscription_saved_message, do: to_payload("Subscription saved!")
+
+  def reprompt_message, do: to_payload("error: empty request")
+
+  defp to_payload(message) do
+    %{text: message, response_type: "in_channel"}
     |> Poison.encode!()
   end
 end

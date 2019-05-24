@@ -30,7 +30,7 @@ defmodule Londibot.RouterTest do
       |> World.create()
 
       conn =
-        conn(:post, "/subscription", %{channel_id: "123", text: "aaa"})
+        conn(:post, "/subscription?q=new", %{channel_id: "123", text: "aaa"})
         |> Router.call(@opts)
 
       assert conn.state == :sent
@@ -38,7 +38,7 @@ defmodule Londibot.RouterTest do
 
       expected = {
         200,
-        [{"cache-control", "max-age=0, private, must-revalidate"}],
+        [{"cache-control", "max-age=0, private, must-revalidate"}, {"content-type", "application/json; charset=utf-8"}],
         "{\"text\":\"Subscription saved!\",\"response_type\":\"in_channel\"}"}
       assert expected == Plug.Test.sent_resp(conn)
     end
