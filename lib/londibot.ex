@@ -4,8 +4,10 @@ defmodule Londibot do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
+    port = String.to_integer(System.get_env("PORT") || "4000")
+
     children = [
-      {Plug.Cowboy, scheme: :http, plug: Londibot.Router, options: [port: 8091]},
+      {Plug.Cowboy, scheme: :http, plug: Londibot.Router, options: [port: port]},
       {Londibot.SubscriptionStore, []},
       {Londibot.DisruptionWorker, forever: true}
     ]
