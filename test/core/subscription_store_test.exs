@@ -5,39 +5,35 @@ defmodule Londibot.SubscriptionStoreTest do
   alias Londibot.SubscriptionStore
 
   test "can save multiple subscriptions" do
-    SubscriptionStore.start_link(%Subscription{id: 55})
-    SubscriptionStore.save(%Subscription{id: 33})
+    SubscriptionStore.start_link(%Subscription{channel_id: 55})
+    SubscriptionStore.save(%Subscription{channel_id: 33})
 
-    assert %Subscription{id: 55} == SubscriptionStore.fetch(55)
-    assert %Subscription{id: 33} == SubscriptionStore.fetch(33)
+    assert %Subscription{channel_id: 55} == SubscriptionStore.fetch(55)
+    assert %Subscription{channel_id: 33} == SubscriptionStore.fetch(33)
   end
 
   test "can update an existing subscription" do
-    SubscriptionStore.start_link(%Subscription{id: 55})
-    SubscriptionStore.save(%Subscription{id: 55, channel_id: "value"})
+    SubscriptionStore.start_link(%Subscription{channel_id: 55})
+    SubscriptionStore.save(%Subscription{channel_id: 55, tfl_lines: ["value"]})
 
-    assert %Subscription{id: 55, channel_id: "value"} == SubscriptionStore.fetch(55)
+    assert %Subscription{channel_id: 55, tfl_lines: ["value"]} == SubscriptionStore.fetch(55)
   end
 
   test "retrieves all subscriptions" do
-    SubscriptionStore.start_link(%Subscription{id: 55, channel_id: "55"})
-    SubscriptionStore.save(%Subscription{id: 33, channel_id: "33"})
-
-    expected = [
-      %Subscription{id: 55, channel_id: "55"},
-      %Subscription{id: 33, channel_id: "33"}]
-
-    assert expected  == SubscriptionStore.all()
-  end
-
-  test "new subscriptions are saved with increasing ids" do
     SubscriptionStore.start_link(%Subscription{channel_id: "55"})
     SubscriptionStore.save(%Subscription{channel_id: "33"})
 
     expected = [
-      %Subscription{id: 1, channel_id: "55"},
-      %Subscription{id: 2, channel_id: "33"}]
+      %Subscription{channel_id: "55"},
+      %Subscription{channel_id: "33"}]
 
     assert expected  == SubscriptionStore.all()
+  end
+
+  test "can't save subscriptions without a channel_id" do
+    SubscriptionStore.start_link([])
+    result = SubscriptionStore.save(%Subscription{tfl_lines: ["value"]})
+
+    assert {:error, "missing channel_id"} == result
   end
 end

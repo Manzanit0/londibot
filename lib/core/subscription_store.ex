@@ -24,12 +24,12 @@ defmodule Londibot.SubscriptionStore do
 
   def all, do: Agent.get(__MODULE__, & &1)
 
-  def fetch(id) when is_integer(id), do: Enum.find(all(), fn subscription -> subscription.id == id end)
+  def fetch(id), do: Enum.find(all(), fn subscription -> subscription.channel_id == id end)
 
-  def save(s = %Subscription{id: nil}), do: save(%Subscription{s | id: System.unique_integer([:monotonic, :positive])})
+  def save(%Subscription{channel_id: nil}), do: {:error, "missing channel_id"}
   def save(s), do: Agent.update(__MODULE__, &(upsert(&1, s)))
 
   defp upsert([], s = %Subscription{}), do: [s]
-  defp upsert([%{id: id}|t], s = %Subscription{id: id}), do: [s|t]
+  defp upsert([%{channel_id: id}|t], s = %Subscription{channel_id: id}), do: [s|t]
   defp upsert([h|t], s = %Subscription{}), do: [h|upsert(t, s)]
 end
