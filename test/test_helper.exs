@@ -4,4 +4,4 @@ Application.ensure_all_started(:mox)
 Application.ensure_all_started(:httpoison)
 Application.ensure_all_started(:plug)
 
-ExUnit.start()
+ExUnit.start(exclude: [:skip])
