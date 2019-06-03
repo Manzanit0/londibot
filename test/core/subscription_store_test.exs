@@ -26,6 +26,18 @@ defmodule Londibot.SubscriptionStoreTest do
     expected = [
       %Subscription{id: 55, channel_id: "55"},
       %Subscription{id: 33, channel_id: "33"}]
-    assert expected  == SubscriptionStore.all
+
+    assert expected  == SubscriptionStore.all()
+  end
+
+  test "new subscriptions are saved with increasing ids" do
+    SubscriptionStore.start_link(%Subscription{channel_id: "55"})
+    SubscriptionStore.save(%Subscription{channel_id: "33"})
+
+    expected = [
+      %Subscription{id: 1, channel_id: "55"},
+      %Subscription{id: 2, channel_id: "33"}]
+
+    assert expected  == SubscriptionStore.all()
   end
 end
