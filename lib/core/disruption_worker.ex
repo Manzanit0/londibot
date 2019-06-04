@@ -24,10 +24,10 @@ defmodule Londibot.DisruptionWorker do
   end
 
   def disruption_notifications do
-    @tfl_service.lines
-    |> @tfl_service.status
-    |> @tfl_service.disruptions
-    |> create_notifications
+    @tfl_service.lines()
+    |> @tfl_service.status()
+    |> @tfl_service.disruptions()
+    |> create_notifications()
   end
 
   def create_notifications(disruptions) do
@@ -49,7 +49,7 @@ defmodule Londibot.DisruptionWorker do
 
   defp sleep(minutes) do
     minutes
-    |> :timer.minutes
-    |> :timer.sleep
+    |> :timer.minutes()
+    |> :timer.sleep()
   end
 end
