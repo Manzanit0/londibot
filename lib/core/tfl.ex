@@ -12,7 +12,7 @@ defmodule Londibot.TFL do
     "https://api.tfl.gov.uk/Line/Mode/tube%2Cdlr%2Coverground%2Ctflrail"
     |> HTTPoison.get!(recv_timeout: 50000)
     |> Map.get(:body)
-    |> Poison.decode!
+    |> Poison.decode!()
     |> Enum.map(fn x -> x["id"] end)
   end
 
@@ -24,9 +24,9 @@ defmodule Londibot.TFL do
 
   def status(lines) when is_binary(lines) do
     "https://api.tfl.gov.uk/Line/#{lines}/Status?detail=true"
-    |> HTTPoison.get!
+    |> HTTPoison.get!(recv_timeout: 50000)
     |> Map.get(:body)
-    |> Poison.decode!
+    |> Poison.decode!()
     |> Enum.map(fn x -> parse_line(x) end)
   end
 
