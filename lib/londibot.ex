@@ -11,7 +11,7 @@ defmodule Londibot do
     children = [
       {Plug.Cowboy, scheme: :http, plug: Londibot.Router, options: [port: port]},
       {Londibot.SubscriptionStore, []},
-      {Londibot.DisruptionWorker, forever: true}
+      {Londibot.DisruptionWorker, [forever: true]}
     ]
 
     Logger.info("Started londibot on port #{port}")

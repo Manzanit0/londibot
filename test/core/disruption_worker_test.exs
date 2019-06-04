@@ -1,8 +1,12 @@
 defmodule Londibot.DisruptionWorkerTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
+
+  import Mox
 
   alias Londibot.DisruptionWorker
   alias Londibot.Notification
+
+  setup :set_mox_global
 
   test "generates notifications for two subscriptions to the same disruption" do
     World.new()
@@ -56,7 +60,7 @@ defmodule Londibot.DisruptionWorkerTest do
     |> World.with_notifications(1)
     |> World.create()
 
-    DisruptionWorker.run(forever: false)
+    DisruptionWorker.handle_info(:work, forever: false)
 
     Mox.verify!(Londibot.NotifierMock)
   end
@@ -70,12 +74,11 @@ defmodule Londibot.DisruptionWorkerTest do
     |> World.with_notifications(2)
     |> World.create()
 
-    DisruptionWorker.start_link(forever: false)
+    DisruptionWorker.start_link(forever: false, minutes: 0.001)
 
-    # Since supervised tasks cannot be awaited, I felt it was better
-    # to sleep the thread 1000 ms to wait for it to finish rather than
-    # not testing it.
-    :timer.sleep(1000)
+    # I felt it was better to sleep the thread 100 ms to wait for it
+    # to finish rather than not testing it.
+    :timer.sleep(100)
 
     Mox.verify!(Londibot.NotifierMock)
   end

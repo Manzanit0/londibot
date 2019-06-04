@@ -1,29 +1,39 @@
 defmodule Londibot.DisruptionWorker do
-  use Task, restart: :permanent
+  use GenServer
 
   require Logger
 
   alias Londibot.Subscription
   alias Londibot.Notification
 
+  @default_minutes 3
+
   @subscription_store Application.get_env(:londibot, :subscription_store)
   @tfl_service Application.get_env(:londibot, :tfl_service)
   @notifier Application.get_env(:londibot, :notifier)
 
-  def start_link(arg) do
+  def start_link(arg \\ []) do
     Logger.info("Starting DisruptionWorker")
-    Task.start_link(__MODULE__, :run, [arg])
+    GenServer.start_link(__MODULE__, arg)
   end
 
-  def run([forever: forever] = arg) do
+  def init(state) do
+    state
+    |> Keyword.get(:minutes, @default_minutes)
+    |> schedule_work()
+
+    {:ok, state}
+  end
+
+  def handle_info(:work, state) do
     Enum.each(disruption_notifications(), &@notifier.send/1)
 
-    if forever do
-      # TODO - a performance improvement could be
-      # to use Process.send_after/4 + Genserver
-      sleep(2)
-      run(arg)
+    if Keyword.get(state, :forever) do
+      minutes = Keyword.get(state, :minutes, @default_minutes)
+      schedule_work(minutes)
     end
+
+    {:noreply, state}
   end
 
   def disruption_notifications do
@@ -50,9 +60,12 @@ defmodule Londibot.DisruptionWorker do
   defp create_notification(disruption_description, channel),
     do: %Notification{message: disruption_description, channel_id: channel}
 
-  defp sleep(minutes) do
-    minutes
-    |> :timer.minutes()
-    |> :timer.sleep()
+  defp schedule_work(minutes) do
+    milliseconds =
+      minutes
+      |> :timer.minutes()
+      |> Kernel.trunc()
+
+    Process.send_after(self(), :work, milliseconds)
   end
 end
