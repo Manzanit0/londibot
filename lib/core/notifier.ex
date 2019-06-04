@@ -7,6 +7,8 @@ defmodule Londibot.NotifierBehaviour do
 end
 
 defmodule Londibot.Notifier do
+  require Logger
+
   alias Londibot.Notification
 
   @behaviour Londibot.NotifierBehaviour

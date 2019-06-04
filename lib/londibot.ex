@@ -1,6 +1,8 @@
 defmodule Londibot do
   use Application
 
+  require Logger
+
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
@@ -12,8 +14,9 @@ defmodule Londibot do
       {Londibot.DisruptionWorker, forever: true}
     ]
 
-    opts = [strategy: :one_for_one, name: Londibot.Supervisor]
+    Logger.info("Started londibot on port #{port}")
 
+    opts = [strategy: :one_for_one, name: Londibot.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
