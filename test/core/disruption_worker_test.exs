@@ -8,7 +8,6 @@ defmodule Londibot.DisruptionWorkerTest do
     World.new()
     |> World.with_subscription(2, "456RTY", "Victoria")
     |> World.with_subscription(1, "123QWE", "Victoria")
-    |> World.with_disruption("Victoria", "Bad Service", "...")
     |> World.create()
 
     notifications =
@@ -16,8 +15,8 @@ defmodule Londibot.DisruptionWorkerTest do
       |> DisruptionWorker.create_notifications()
 
     assert notifications == [
-             %Notification{message: "Victoria: Bad Service", channel_id: "123QWE"},
-             %Notification{message: "Victoria: Bad Service", channel_id: "456RTY"}
+             %Notification{message: "...", channel_id: "123QWE"},
+             %Notification{message: "...", channel_id: "456RTY"}
            ]
   end
 
@@ -25,16 +24,15 @@ defmodule Londibot.DisruptionWorkerTest do
     World.new()
     |> World.with_subscription(2, "456RTY", "Victoria")
     |> World.with_subscription(1, "123QWE", "Circle")
-    |> World.with_disruption("Victoria", "Bad Service", "...")
     |> World.create()
 
     notifications =
-      [{"Victoria", "Minor delays", "..."}, {"Circle", "Minor delays", "..."}]
+      [{"Victoria", "Minor delays", "victoria - delay"}, {"Circle", "Minor delays", "circle - delay"}]
       |> DisruptionWorker.create_notifications()
 
     assert notifications == [
-             %Notification{message: "Victoria: Minor delays", channel_id: "456RTY"},
-             %Notification{message: "Circle: Minor delays", channel_id: "123QWE"}
+             %Notification{message: "victoria - delay", channel_id: "456RTY"},
+             %Notification{message: "circle - delay", channel_id: "123QWE"}
            ]
   end
 
@@ -47,7 +45,7 @@ defmodule Londibot.DisruptionWorkerTest do
 
     notifications = DisruptionWorker.disruption_notifications()
 
-    assert notifications == [%Notification{message: "Circle: Minor Delays", channel_id: "123QWE"}]
+    assert notifications == [%Notification{message: "...", channel_id: "123QWE"}]
   end
 
   test "sends notifications based on existing disruptions" do

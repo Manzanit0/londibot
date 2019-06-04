@@ -34,10 +34,10 @@ defmodule Londibot.DisruptionWorker do
   end
 
   def create_notifications(disruptions) do
-    for {disrupted_line, status, _} <- disruptions,
+    for {disrupted_line, _, description} <- disruptions,
         %Subscription{channel_id: channel, tfl_lines: lines} <- @subscription_store.all(),
         subscribed?(lines, disrupted_line) do
-      create_notification(disrupted_line, status, channel)
+      create_notification(description, channel)
     end
   end
 
@@ -47,8 +47,8 @@ defmodule Londibot.DisruptionWorker do
     end)
   end
 
-  defp create_notification(disrupted_line, status, channel),
-    do: %Notification{message: ~s(#{disrupted_line}: #{status}), channel_id: channel}
+  defp create_notification(disruption_description, channel),
+    do: %Notification{message: disruption_description, channel_id: channel}
 
   defp sleep(minutes) do
     minutes
