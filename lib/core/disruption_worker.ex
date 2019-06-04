@@ -12,29 +12,32 @@ defmodule Londibot.DisruptionWorker do
   @tfl_service Application.get_env(:londibot, :tfl_service)
   @notifier Application.get_env(:londibot, :notifier)
 
-  def start_link(arg \\ []) do
+  def start_link(args \\ []) do
     Logger.info("Starting DisruptionWorker")
-    GenServer.start_link(__MODULE__, arg)
+    GenServer.start_link(__MODULE__, to_map(args))
   end
 
-  def init(state) do
-    state
-    |> Keyword.get(:minutes, @default_minutes)
-    |> schedule_work()
+  defp to_map(args) do
+    %{minutes: Keyword.get(args, :minutes, @default_minutes),
+      forever: Keyword.get(args, :forever, true)}
+  end
 
+  def init(%{minutes: minutes} = state) do
+    schedule_work(minutes)
     {:ok, state}
   end
 
-  def handle_info(:work, state) do
-    Enum.each(disruption_notifications(), &@notifier.send/1)
+  def handle_info(:work, %{minutes: minutes, forever: forever} = state) do
+    send_all_notifications()
 
-    if Keyword.get(state, :forever) do
-      minutes = Keyword.get(state, :minutes, @default_minutes)
+    if forever do
       schedule_work(minutes)
     end
 
     {:noreply, state}
   end
+
+  defp send_all_notifications(), do: Enum.each(disruption_notifications(), &@notifier.send/1)
 
   def disruption_notifications do
     @tfl_service.lines()
@@ -61,11 +64,13 @@ defmodule Londibot.DisruptionWorker do
     do: %Notification{message: disruption_description, channel_id: channel}
 
   defp schedule_work(minutes) do
-    milliseconds =
-      minutes
-      |> :timer.minutes()
-      |> Kernel.trunc()
-
+    milliseconds = to_milliseconds(minutes)
     Process.send_after(self(), :work, milliseconds)
+  end
+
+  defp to_milliseconds(minutes) do
+    minutes
+    |> :timer.minutes()
+    |> Kernel.trunc()
   end
 end

@@ -60,7 +60,7 @@ defmodule Londibot.DisruptionWorkerTest do
     |> World.with_notifications(1)
     |> World.create()
 
-    DisruptionWorker.handle_info(:work, forever: false)
+    DisruptionWorker.handle_info(:work, %{forever: false, minutes: nil})
 
     Mox.verify!(Londibot.NotifierMock)
   end
