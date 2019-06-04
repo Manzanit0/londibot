@@ -11,15 +11,23 @@ end
 defmodule Londibot.SubscriptionStore do
   use Agent
 
+  require Logger
+
   alias Londibot.Subscription
 
   @behaviour Londibot.StoreBehaviour
 
   def start_link(s = %Subscription{}), do: start_link([s])
-  def start_link([]), do: Agent.start_link(fn -> [] end, name: __MODULE__)
-  def start_link(subscriptions) when is_list(subscriptions) do
+
+  def start_link([]) do
+    Logger.info("Starting SubscriptionStore")
     Agent.start_link(fn -> [] end, name: __MODULE__)
-    Enum.each(subscriptions, &save/1)
+  end
+
+  def start_link(subscriptions) do
+    start_link([])
+    unless Enum.empty?(subscriptions), do:
+      Enum.each(subscriptions, &save/1)
   end
 
   def all, do: Agent.get(__MODULE__, & &1)

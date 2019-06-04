@@ -1,6 +1,8 @@
 defmodule Londibot.DisruptionWorker do
   use Task, restart: :permanent
 
+  require Logger
+
   alias Londibot.Subscription
   alias Londibot.Notification
 
@@ -9,6 +11,7 @@ defmodule Londibot.DisruptionWorker do
   @notifier Application.get_env(:londibot, :notifier)
 
   def start_link(arg) do
+    Logger.info("Starting DisruptionWorker")
     Task.start_link(__MODULE__, :run, [arg])
   end
 
@@ -18,7 +21,7 @@ defmodule Londibot.DisruptionWorker do
     if forever do
       # TODO - a performance improvement could be
       # to use Process.send_after/4 + Genserver
-      sleep(3)
+      sleep(2)
       run(arg)
     end
   end
