@@ -1,8 +1,7 @@
 defmodule Londibot.Router do
   use Plug.Router
 
-  alias Londibot.Commands.CommandRunner
-  alias Londibot.Web.SubscriptionHandler
+  alias Londibot.Web.SlackHandler
 
   plug Londibot.Web.DefaultHeadersPlug
   plug Plug.Parsers, parsers: [:urlencoded, :multipart]
@@ -12,7 +11,7 @@ defmodule Londibot.Router do
   get("/", do: send_resp(conn, 200, "Service up and running!!"))
 
   post "/slack" do
-    case Londibot.Web.SlackHandler.handle(conn) do
+    case SlackHandler.handle(conn) do
       {:error, msg} -> send_resp(conn, 200, "I'm sorry! #{msg}")
       msg -> send_resp(conn, 200, msg)
     end
