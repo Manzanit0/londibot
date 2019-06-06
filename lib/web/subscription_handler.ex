@@ -23,7 +23,7 @@ defmodule Londibot.Web.SubscriptionHandler do
 
   defp parse_lines(lines), do: String.split(lines, ",")
 
-  defp get_subscriptions(channel_id) do
+  def get_subscriptions(channel_id) do
     subscriptions =
       @subscription_store.all()
       |> Enum.filter(fn %Subscription{channel_id: c} -> c == channel_id end)
@@ -34,7 +34,7 @@ defmodule Londibot.Web.SubscriptionHandler do
     subscription_list_message(subscriptions)
   end
 
-  defp subscription_saved_message, do: to_payload("Subscription saved!")
+  def subscription_saved_message, do: to_payload("Subscription saved!")
 
   defp reprompt_message, do: to_payload("error: empty request")
 
