@@ -16,22 +16,17 @@ defmodule Londibot.Web.SlackHandler do
       Command.new(command, params, id)
       # TODO Potentially wrap execute in a task? and return a custom response?
       |> CommandRunner.execute()
-      |> to_payload()
+      |> to_response()
     else
-      {:error, err} -> to_payload({:error, err})
+      {:error, err} -> to_response({:error, err})
     end
   end
 
-  defp to_payload({:ok, message}) do
-    %{text: message, response_type: "in_channel"}
-    |> Poison.encode!()
-  end
+  # If the user triggers an error, keep it silent and give only him the feedback.
+  defp to_response({:error, message}), do: Poison.encode!(%{text: message})
 
-  @doc "If the user causes an error, keep it silent and give only him the feedback"
-  defp to_payload({:error, message}) do
-    %{text: message}
-    |> Poison.encode!()
-  end
+  defp to_response({:ok, message}),
+    do: Poison.encode!(%{text: message, response_type: "in_channel"})
 
   # TODO - use atoms
   defp process_payload("subscribe" <> params), do: {:ok, "subscribe", params}
