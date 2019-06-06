@@ -6,16 +6,20 @@ defmodule Londibot.Commands.CommandRunner do
   @subscription_store Application.get_env(:londibot, :subscription_store)
 
   def execute(%Command{command: "status"}) do
-    @tfl_service.lines()
-    |> @tfl_service.status()
-    |> to_text(:status)
+    message =
+      @tfl_service.lines()
+      |> @tfl_service.status()
+      |> to_text(:status)
+    {:ok, message}
   end
 
   def execute(%Command{command: "disruptions"}) do
-    @tfl_service.lines()
-    |> @tfl_service.status()
-    |> @tfl_service.disruptions()
-    |> to_text(:disruptions)
+    message =
+      @tfl_service.lines()
+      |> @tfl_service.status()
+      |> @tfl_service.disruptions()
+      |> to_text(:disruptions)
+    {:ok, message}
   end
 
   def execute(%Command{command: "subscriptions", channel_id: channel_id}) do
@@ -25,28 +29,19 @@ defmodule Londibot.Commands.CommandRunner do
       |> Enum.map(fn x -> Map.get(x, :tfl_lines) end)
       |> List.flatten()
       |> Enum.join(", ")
-
-    subscription_list_message(subscriptions)
+    {:ok, subscription_list_message(subscriptions)}
   end
 
   def execute(%Command{command: "subscribe", params: p, channel_id: c}) do
     subscription = %Subscription{channel_id: c, tfl_lines: p}
     @subscription_store.save(subscription)
-
-    subscription_saved_message()
+    {:ok, "Subscription saved!"}
   end
 
   def execute(_), do: {:error, "The command you just tried doesn't exist!"}
 
-  defp subscription_saved_message, do: to_payload("Subscription saved!")
-
-  defp subscription_list_message(""), do: to_payload("You are currently not subscribed to any line")
-  defp subscription_list_message(subscriptions),do: to_payload("You are currently subscribed to: " <> subscriptions)
-
-  defp to_payload(message) do
-    %{text: message, response_type: "in_channel"}
-    |> Poison.encode!()
-  end
+  defp subscription_list_message(""), do: "You are currently not subscribed to any line"
+  defp subscription_list_message(subscriptions),do: "You are currently subscribed to: " <> subscriptions
 
   defp to_text(statuses, mode) when is_list(statuses) do
     statuses
