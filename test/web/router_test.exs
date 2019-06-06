@@ -25,7 +25,7 @@ defmodule Londibot.RouterTest do
   end
 
   describe "/subscription" do
-    test "returns success message" do
+    test "returns success message with correct headers" do
       World.new()
       |> World.create()
 
