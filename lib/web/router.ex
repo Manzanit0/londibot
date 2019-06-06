@@ -11,10 +11,8 @@ defmodule Londibot.Router do
   get("/", do: send_resp(conn, 200, "Service up and running!!"))
 
   post "/slack" do
-    case SlackHandler.handle(conn) do
-      {:error, msg} -> send_resp(conn, 200, "I'm sorry! #{msg}")
-      msg -> send_resp(conn, 200, msg)
-    end
+    msg = SlackHandler.handle(conn)
+    send_resp(conn, 200, msg)
   end
 
   match(_, do: send_resp(conn, 404, "Nothing found here!"))

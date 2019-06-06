@@ -18,7 +18,7 @@ defmodule Londibot.Web.SlackHandler do
       |> CommandRunner.execute()
       |> to_payload()
     else
-      {:error, err} -> {:error, err}
+      {:error, err} -> to_payload({:error, err})
     end
   end
 
