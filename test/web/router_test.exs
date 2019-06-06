@@ -30,7 +30,7 @@ defmodule Londibot.RouterTest do
       |> World.create()
 
       conn =
-        conn(:post, "/subscription?q=new", %{channel_id: "123", text: "aaa"})
+        conn(:post, "/slack", %{channel_id: "123", text: "subscribe victoria"})
         |> Router.call(@opts)
 
       assert conn.state == :sent

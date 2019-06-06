@@ -8,7 +8,7 @@ defmodule Londibot.Web.SlackHandler do
   # Slack will occasionally send your command's request URL a simple POST
   # request to verify the server's SSL certificate. These requests will
   # include a parameter ssl_check set to 1 and a token parameter.
-  def handle(%{"ssl_check" => id, "token" => text}), do: "Received!"
+  def handle(%{"ssl_check" => _, "token" => _}), do: "Received!"
 
   def handle(%{"channel_id" => id, "text" => text}) do
     with {:ok, command, raw_params} <- process_payload(text),
