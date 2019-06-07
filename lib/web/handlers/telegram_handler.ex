@@ -19,10 +19,10 @@ defmodule Londibot.Web.TelegramHandler do
   end
 
   defp to_response({:error, message}, id),
-    do: Poison.encode!(%{method: "sendMessage", chat_id: id, text: message})
+    do: Poison.encode!(%{method: "sendMessage", chat_id: id, text: message, parse_mode: "markdown"})
 
   defp to_response({:ok, message}, id),
-    do: Poison.encode!(%{method: "sendMessage", chat_id: id, text: message})
+    do: Poison.encode!(%{method: "sendMessage", chat_id: id, text: message, parse_mode: "markdown"})
 
   defp process_payload("/subscribe" <> params), do: {:ok, "subscribe", params}
   defp process_payload("/unsubscribe" <> params), do: {:ok, "unsubscribe", params}

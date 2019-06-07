@@ -14,8 +14,8 @@ defmodule Londibot.Commands.CommandRunnerTest do
     # World prints returns the information for all the lines.
     # The interesting thing to test here is that CommandRunner returns
     # a text with some of the info.
-    assert String.contains?(result, "Circle: Minor Delays\n")
-    assert String.contains?(result, "victoria: Good Service\n")
+    assert String.contains?(result, "*Circle:* Minor Delays\n")
+    assert String.contains?(result, "*victoria:* Good Service\n")
   end
 
   test "formats disruptions as a report" do
@@ -24,7 +24,7 @@ defmodule Londibot.Commands.CommandRunnerTest do
     |> World.create()
 
     {:ok, message} = CommandRunner.execute(%Command{command: "disruptions"})
-    assert "CIRCLE: Minor delays due to..." == message
+    assert "CIRCLE: Minor delays due to...\n" == message
   end
 
   test "obtains current subscriptions for a given channel_id" do
