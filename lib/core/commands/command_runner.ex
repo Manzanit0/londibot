@@ -9,7 +9,8 @@ defmodule Londibot.Commands.CommandRunner do
     message =
       @tfl_service.lines()
       |> @tfl_service.status()
-      |> to_text(:status)
+      |> to_status_message()
+
     {:ok, message}
   end
 
@@ -18,18 +19,18 @@ defmodule Londibot.Commands.CommandRunner do
       @tfl_service.lines()
       |> @tfl_service.status()
       |> @tfl_service.disruptions()
-      |> to_text(:disruptions)
+      |> to_disruption_message()
+
     {:ok, message}
   end
 
   def execute(%Command{command: "subscriptions", channel_id: channel_id}) do
-    subscriptions =
+    message =
       @subscription_store.all()
       |> Enum.filter(fn %Subscription{channel_id: c} -> c == channel_id end)
-      |> Enum.map(fn x -> Map.get(x, :tfl_lines) end)
-      |> List.flatten()
-      |> Enum.join(", ")
-    {:ok, subscription_list_message(subscriptions)}
+      |> to_subscriptions_message()
+
+    {:ok, message}
   end
 
   def execute(%Command{command: "subscribe", params: p, channel_id: c}) do
@@ -40,15 +41,29 @@ defmodule Londibot.Commands.CommandRunner do
 
   def execute(_), do: {:error, "The command you just tried doesn't exist!"}
 
-  defp subscription_list_message(""), do: "You are currently not subscribed to any line"
-  defp subscription_list_message(subscriptions),do: "You are currently subscribed to: " <> subscriptions
+  defp to_subscriptions_message(subscriptions) do
+    message =
+      subscriptions
+      |> Enum.map(fn x -> Map.get(x, :tfl_lines) end)
+      |> List.flatten()
+      |> Enum.join(", ")
 
-  defp to_text(statuses, mode) when is_list(statuses) do
-    statuses
-    |> Enum.map(fn status -> to_text(mode, status) end)
+    if String.length(message) > 0 do
+      "You are currently subscribed to: " <> message
+    else
+      "You are currently not subscribed to any line"
+    end
+  end
+
+  defp to_disruption_message(disruptions) do
+    disruptions
+    |> Enum.map(fn {_, _, description} -> ~s(#{description}\n) end)
     |> Enum.join("\n")
   end
 
-  defp to_text(:disruptions, {_, _, description}), do: ~s(#{description}\n)
-  defp to_text(:status, {name, status, _}), do: ~s(*#{name}:* #{status})
+  defp to_status_message(statuses) do
+    statuses
+    |> Enum.map(fn {name, status, _} -> ~s(*#{name}:* #{status}) end)
+    |> Enum.join("\n")
+  end
 end
