@@ -49,6 +49,6 @@ defmodule Londibot.Commands.CommandRunner do
     |> Enum.join("\n")
   end
 
-  defp to_text(:disruptions, {_, _, description}), do: ~s(#{description})
-  defp to_text(:status, {name, status, _}), do: ~s(#{name}: #{status})
+  defp to_text(:disruptions, {_, _, description}), do: ~s(#{description}\n)
+  defp to_text(:status, {name, status, _}), do: ~s(*#{name}:* #{status})
 end
