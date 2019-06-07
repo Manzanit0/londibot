@@ -10,10 +10,10 @@ defmodule Londibot.Web.CommandParserTest do
     cmd = %Command{
       command: "status",
       params: [],
-      channel_id: "id"
+      channel_id: nil
     }
 
-    assert cmd == CommandParser.parse(text, "id")
+    assert cmd == CommandParser.parse(text)
   end
 
   test "parses command with params" do
@@ -22,16 +22,16 @@ defmodule Londibot.Web.CommandParserTest do
     cmd = %Command{
       command: "subscribe",
       params: ["victoria", "overground", "northern"],
-      channel_id: "id"
+      channel_id: nil
     }
 
-    assert cmd == CommandParser.parse(text, "id")
+    assert cmd == CommandParser.parse(text)
   end
 
   test "detects invalid commands" do
     text = "nigiri victoria, overground, northern"
     result = {:error, "error parsing command"}
 
-    assert result == CommandParser.parse(text, "id")
+    assert result == CommandParser.parse(text)
   end
 end

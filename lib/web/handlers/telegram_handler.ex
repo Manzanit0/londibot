@@ -1,4 +1,5 @@
 defmodule Londibot.Web.TelegramHandler do
+  alias Londibot.Commands.Command
   alias Londibot.Commands.CommandRunner
   alias Londibot.Web.CommandParser
 
@@ -8,7 +9,8 @@ defmodule Londibot.Web.TelegramHandler do
   def handle(%{"message" => %{"from" => %{"id" => id}, "text" => text}}) do
     text
     |> remove_first_character()
-    |> CommandParser.parse(id)
+    |> CommandParser.parse()
+    |> Command.with_channel_id(id)
     |> CommandRunner.execute()
     |> to_response(id)
   end

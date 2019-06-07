@@ -1,4 +1,5 @@
 defmodule Londibot.Web.SlackHandler do
+  alias Londibot.Commands.Command
   alias Londibot.Commands.CommandRunner
   alias Londibot.Web.CommandParser
 
@@ -13,7 +14,8 @@ defmodule Londibot.Web.SlackHandler do
   # TODO Potentially wrap execute in a task? and return a custom response?
   def handle(%{"channel_id" => id, "text" => text}) do
     text
-    |> CommandParser.parse(id)
+    |> CommandParser.parse()
+    |> Command.with_channel_id(id)
     |> CommandRunner.execute()
     |> to_response()
   end
