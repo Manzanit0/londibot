@@ -1,10 +1,10 @@
 defmodule Londibot.Web.CommandParser do
   alias Londibot.Commands.Command
 
-  def parse(text, id) do
+  def parse(text) do
     with {:ok, command, raw_params} <- parse_payload(text),
          {:ok, params} <- parse_params(raw_params) do
-      Command.new(command, params, id)
+      Command.new(command, params, nil)
     else
       _ -> {:error, "error parsing command"}
     end
