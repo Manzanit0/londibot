@@ -4,7 +4,7 @@ defmodule Londibot.Web.CommandParser do
   def parse(text) do
     with {:ok, command, raw_params} <- parse_payload(text),
          {:ok, params} <- parse_params(raw_params) do
-      Command.new(command, params, nil)
+      Command.new(command, params)
     else
       _ -> {:error, "error parsing command"}
     end

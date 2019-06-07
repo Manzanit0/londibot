@@ -3,9 +3,14 @@ defmodule Londibot.Commands.CommandTest do
 
   alias Londibot.Commands.Command
 
-  test "creats a full blown command!" do
+  test "creates a full blown command!" do
     command = %Command{command: "hey", params: "ho", channel_id: "let's go!"}
     assert command == Command.new("hey", "ho", "let's go!")
+  end
+
+  test "creates a command without channel_id" do
+    command = %Command{command: "hey", params: "ho", channel_id: nil}
+    assert command == Command.new("hey", "ho")
   end
 
   test "adds channel_id" do
