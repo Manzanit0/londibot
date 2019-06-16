@@ -8,7 +8,7 @@ defmodule Londibot.Web.CommandParserTest do
     text = "status"
 
     cmd = %Command{
-      command: "status",
+      command: :status,
       params: [],
       channel_id: nil
     }
@@ -16,11 +16,47 @@ defmodule Londibot.Web.CommandParserTest do
     assert cmd == CommandParser.parse(text)
   end
 
-  test "parses command with params" do
+  test "parses disruptions command without params" do
+    text = "disruptions"
+
+    cmd = %Command{
+      command: :disruptions,
+      params: [],
+      channel_id: nil
+    }
+
+    assert cmd == CommandParser.parse(text)
+  end
+
+  test "parses subscriptions command without params" do
+    text = "subscriptions"
+
+    cmd = %Command{
+      command: :subscriptions,
+      params: [],
+      channel_id: nil
+    }
+
+    assert cmd == CommandParser.parse(text)
+  end
+
+  test "parses subscribe command with params" do
     text = "subscribe victoria, overground,northern"
 
     cmd = %Command{
-      command: "subscribe",
+      command: :subscribe,
+      params: ["victoria", "overground", "northern"],
+      channel_id: nil
+    }
+
+    assert cmd == CommandParser.parse(text)
+  end
+
+  test "parses unsubscribe command with params" do
+    text = "unsubscribe victoria, overground,northern"
+
+    cmd = %Command{
+      command: :unsubscribe,
       params: ["victoria", "overground", "northern"],
       channel_id: nil
     }
