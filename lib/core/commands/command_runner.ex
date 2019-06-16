@@ -5,7 +5,7 @@ defmodule Londibot.Commands.CommandRunner do
   @tfl_service Application.get_env(:londibot, :tfl_service)
   @subscription_store Application.get_env(:londibot, :subscription_store)
 
-  def execute(%Command{command: "status"}) do
+  def execute(%Command{command: :status}) do
     message =
       @tfl_service.lines()
       |> @tfl_service.status()
@@ -14,7 +14,7 @@ defmodule Londibot.Commands.CommandRunner do
     {:ok, message}
   end
 
-  def execute(%Command{command: "disruptions"}) do
+  def execute(%Command{command: :disruptions}) do
     message =
       @tfl_service.lines()
       |> @tfl_service.status()
@@ -24,7 +24,7 @@ defmodule Londibot.Commands.CommandRunner do
     {:ok, message}
   end
 
-  def execute(%Command{command: "subscriptions", channel_id: channel_id}) do
+  def execute(%Command{command: :subscriptions, channel_id: channel_id}) do
     message =
       @subscription_store.all()
       |> Enum.filter(fn %Subscription{channel_id: c} -> c == channel_id end)
@@ -33,9 +33,10 @@ defmodule Londibot.Commands.CommandRunner do
     {:ok, message}
   end
 
-  def execute(%Command{command: "subscribe", params: p, channel_id: c}) do
+  def execute(%Command{command: :subscribe, params: p, channel_id: c}) do
     subscription = %Subscription{channel_id: c, tfl_lines: p}
     @subscription_store.save(subscription)
+
     {:ok, "Subscription saved!"}
   end
 
