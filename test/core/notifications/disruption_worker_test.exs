@@ -4,7 +4,7 @@ defmodule Londibot.DisruptionWorkerTest do
   import Mox
 
   alias Londibot.DisruptionWorker
-  alias Londibot.Notification
+  alias Londibot.SlackNotification, as: Notification
 
   setup :set_mox_global
 

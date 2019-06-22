@@ -4,7 +4,8 @@ defmodule Londibot.DisruptionWorker do
   require Logger
 
   alias Londibot.Subscription
-  alias Londibot.Notification
+  alias Londibot.SlackNotification
+  alias Londibot.TelegramNotification
 
   @default_minutes 3
 
@@ -18,8 +19,10 @@ defmodule Londibot.DisruptionWorker do
   end
 
   defp to_map(args) do
-    %{minutes: Keyword.get(args, :minutes, @default_minutes),
-      forever: Keyword.get(args, :forever, true)}
+    %{
+      minutes: Keyword.get(args, :minutes, @default_minutes),
+      forever: Keyword.get(args, :forever, true)
+    }
   end
 
   def init(%{minutes: minutes} = state) do
@@ -48,9 +51,10 @@ defmodule Londibot.DisruptionWorker do
 
   def create_notifications(disruptions) do
     for {disrupted_line, _, description} <- disruptions,
-        %Subscription{channel_id: channel, tfl_lines: lines} <- @subscription_store.all(),
+        %Subscription{channel_id: channel, tfl_lines: lines, service: service} <-
+          @subscription_store.all(),
         subscribed?(lines, disrupted_line) do
-      create_notification(description, channel)
+      create_notification(service, description, channel)
     end
   end
 
@@ -60,8 +64,11 @@ defmodule Londibot.DisruptionWorker do
     end)
   end
 
-  defp create_notification(disruption_description, channel),
-    do: %Notification{message: disruption_description, channel_id: channel}
+  defp create_notification(:slack, disruption_description, channel),
+    do: %SlackNotification{message: disruption_description, channel_id: channel}
+
+  defp create_notification(:telegram, disruption_description, channel),
+    do: %TelegramNotification{message: disruption_description, channel_id: channel}
 
   defp schedule_work(minutes) do
     milliseconds = to_milliseconds(minutes)

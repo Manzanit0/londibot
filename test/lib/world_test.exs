@@ -13,12 +13,22 @@ defmodule WorldTest do
       |> World.with_subscription("id", "channel_id", ["victoria"])
 
     assert subscriptions == [
-             %Subscription{id: "id", channel_id: "channel_id", tfl_lines: ["victoria"]}
+             %Subscription{
+               service: :slack,
+               id: "id",
+               channel_id: "channel_id",
+               tfl_lines: ["victoria"]
+             }
            ]
   end
 
   test "adds a subscription as struct" do
-    s = %Subscription{id: "id", channel_id: "channel_id", tfl_lines: ["victoria"]}
+    s = %Subscription{
+      service: :slack,
+      id: "id",
+      channel_id: "channel_id",
+      tfl_lines: ["victoria"]
+    }
 
     %{subscriptions: subscriptions} =
       World.new()
@@ -36,17 +46,29 @@ defmodule WorldTest do
     store = Application.get_env(:londibot, :subscription_store)
 
     assert store.all() == [
-             %Subscription{id: "9", channel_id: "123QWE", tfl_lines: ["circle", "bakerloo"]},
-             %Subscription{id: "5", channel_id: "ASD890", tfl_lines: ["victoria"]}
+             %Subscription{
+               service: :slack,
+               id: "9",
+               channel_id: "123QWE",
+               tfl_lines: ["circle", "bakerloo"]
+             },
+             %Subscription{
+               service: :slack,
+               id: "5",
+               channel_id: "ASD890",
+               tfl_lines: ["victoria"]
+             }
            ]
 
     assert store.fetch("5") == %Subscription{
+             service: :slack,
              id: "5",
              channel_id: "ASD890",
              tfl_lines: ["victoria"]
            }
 
     assert store.fetch("9") == %Subscription{
+             service: :slack,
              id: "9",
              channel_id: "123QWE",
              tfl_lines: ["circle", "bakerloo"]
@@ -104,8 +126,18 @@ defmodule WorldTest do
     store = Application.get_env(:londibot, :subscription_store)
 
     assert store.all() == [
-             %Subscription{id: "9", channel_id: "123QWE", tfl_lines: ["circle", "bakerloo"]},
-             %Subscription{id: "5", channel_id: "ASD890", tfl_lines: ["victoria"]}
+             %Subscription{
+               service: :slack,
+               id: "9",
+               channel_id: "123QWE",
+               tfl_lines: ["circle", "bakerloo"]
+             },
+             %Subscription{
+               service: :slack,
+               id: "5",
+               channel_id: "ASD890",
+               tfl_lines: ["victoria"]
+             }
            ]
 
     tfl_service = Application.get_env(:londibot, :tfl_service)

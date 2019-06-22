@@ -36,7 +36,12 @@ defmodule World do
 
   def with_subscription(env_setup, id, channel_id, lines),
     do:
-      with_subscription(env_setup, %Subscription{id: id, channel_id: channel_id, tfl_lines: lines})
+      with_subscription(env_setup, %Subscription{
+        service: :slack,
+        id: id,
+        channel_id: channel_id,
+        tfl_lines: lines
+      })
 
   def with_subscription(e = %World{subscriptions: subscriptions}, s = %Subscription{}),
     do: %World{e | subscriptions: [s | subscriptions]}
