@@ -4,8 +4,7 @@ defmodule Londibot.DisruptionWorker do
   require Logger
 
   alias Londibot.Subscription
-  alias Londibot.SlackNotification
-  alias Londibot.TelegramNotification
+  alias Londibot.NotificationFactory
 
   @default_minutes 3
 
@@ -51,10 +50,9 @@ defmodule Londibot.DisruptionWorker do
 
   def create_notifications(disruptions) do
     for {disrupted_line, _, description} <- disruptions,
-        %Subscription{channel_id: channel, tfl_lines: lines, service: service} <-
-          @subscription_store.all(),
+        %Subscription{tfl_lines: lines} = s <- @subscription_store.all(),
         subscribed?(lines, disrupted_line) do
-      create_notification(service, description, channel)
+      NotificationFactory.create(s, description)
     end
   end
 
@@ -63,12 +61,6 @@ defmodule Londibot.DisruptionWorker do
       String.downcase(x) == String.downcase(disrupted_line)
     end)
   end
-
-  defp create_notification(:slack, disruption_description, channel),
-    do: %SlackNotification{message: disruption_description, channel_id: channel}
-
-  defp create_notification(:telegram, disruption_description, channel),
-    do: %TelegramNotification{message: disruption_description, channel_id: channel}
 
   defp schedule_work(minutes) do
     milliseconds = to_milliseconds(minutes)
