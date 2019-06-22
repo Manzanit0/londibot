@@ -33,8 +33,8 @@ defmodule Londibot.Commands.CommandRunner do
     {:ok, message}
   end
 
-  def execute(%Command{command: :subscribe, params: p, channel_id: c}) do
-    subscription = %Subscription{channel_id: c, tfl_lines: p}
+  def execute(%Command{command: :subscribe, params: p, channel_id: c, service: s}) do
+    subscription = %Subscription{channel_id: c, tfl_lines: p, service: s}
     @subscription_store.save(subscription)
 
     {:ok, "Subscription saved!"}

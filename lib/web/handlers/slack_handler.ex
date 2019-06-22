@@ -16,6 +16,7 @@ defmodule Londibot.Web.SlackHandler do
     text
     |> CommandParser.parse()
     |> Command.with_channel_id(id)
+    |> Command.with_service(:slack)
     |> CommandRunner.execute()
     |> to_response()
   end
