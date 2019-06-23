@@ -36,10 +36,13 @@ defmodule Londibot.RouterTest do
       assert conn.state == :sent
       assert conn.status == 200
 
-      expected = {
-        200,
-        [{"cache-control", "max-age=0, private, must-revalidate"}, {"content-type", "application/json; charset=utf-8"}],
-        "{\"text\":\"Subscription saved!\",\"response_type\":\"in_channel\"}"}
+      expected =
+        {200,
+         [
+           {"cache-control", "max-age=0, private, must-revalidate"},
+           {"content-type", "application/json; charset=utf-8"}
+         ], "{\"text\":\"Subscription saved!\",\"response_type\":\"in_channel\"}"}
+
       assert expected == Plug.Test.sent_resp(conn)
     end
   end
