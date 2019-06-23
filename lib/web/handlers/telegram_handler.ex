@@ -6,13 +6,17 @@ defmodule Londibot.Web.TelegramHandler do
   def handle(%Plug.Conn{body_params: bp}), do: handle(bp)
 
   # https://core.telegram.org/bots/api#update
-  def handle(%{"message" => %{"from" => %{"id" => id}, "text" => text}}) do
-    text
-    |> remove_first_character()
-    |> CommandParser.parse()
-    |> Command.with_channel_id(id)
-    |> CommandRunner.execute()
-    |> to_response(id)
+  def handle(%{"message" => %{"from" => %{"id" => id}, "text" => raw_text}}) do
+    with text <- remove_first_character(raw_text),
+         %Command{} = command <- CommandParser.parse(text) do
+      command
+      |> Command.with_channel_id(id)
+      |> Command.with_service(:telegram)
+      |> CommandRunner.execute()
+      |> to_response(id)
+    else
+      {:error, message} -> to_response({:error, message}, id)
+    end
   end
 
   # Telegram commmands, unlike Slack, come with the leading slash.

@@ -66,7 +66,7 @@ defmodule Londibot.Web.CommandParserTest do
 
   test "detects invalid commands" do
     text = "nigiri victoria, overground, northern"
-    result = {:error, "error parsing command"}
+    result = {:error, "The command you just tried doesn't exist!"}
 
     assert result == CommandParser.parse(text)
   end

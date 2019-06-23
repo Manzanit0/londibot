@@ -6,7 +6,7 @@ defmodule Londibot.Web.CommandParser do
          {:ok, params} <- parse_params(raw_params) do
       Command.new(command, params)
     else
-      _ -> {:error, "error parsing command"}
+      {:error, message} -> {:error, message}
     end
   end
 
@@ -18,6 +18,7 @@ defmodule Londibot.Web.CommandParser do
   defp parse_payload(_), do: {:error, "The command you just tried doesn't exist!"}
 
   defp parse_params(""), do: {:ok, []}
+
   defp parse_params(raw_params) do
     params =
       raw_params
