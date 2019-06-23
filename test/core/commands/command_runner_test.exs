@@ -5,7 +5,7 @@ defmodule Londibot.Commands.CommandRunnerTest do
   alias Londibot.Commands.Command
 
   test "formats line statuses as a report" do
-    World.new
+    World.new()
     |> World.with_disruption("Circle", "Minor Delays", "...")
     |> World.create()
 
@@ -19,7 +19,7 @@ defmodule Londibot.Commands.CommandRunnerTest do
   end
 
   test "formats disruptions as a report" do
-    World.new
+    World.new()
     |> World.with_disruption("Circle", "Minor Delays", "CIRCLE: Minor delays due to...")
     |> World.create()
 
@@ -28,36 +28,45 @@ defmodule Londibot.Commands.CommandRunnerTest do
   end
 
   test "obtains current subscriptions for a given channel_id" do
-    World.new
+    World.new()
     |> World.with_subscription(45, "channel_id", "Victoria")
     |> World.with_subscription(46, "channel_id", "London Overground")
     |> World.create()
 
-    {:ok, message} = CommandRunner.execute(%Command{command: :subscriptions, channel_id: "channel_id"})
+    {:ok, message} =
+      CommandRunner.execute(%Command{command: :subscriptions, channel_id: "channel_id"})
+
     assert "You are currently subscribed to: London Overground, Victoria" == message
   end
 
   test "formats a no-subscriptions message" do
-    World.new
+    World.new()
     |> World.with_subscription(45, "channel_id", "Victoria")
     |> World.with_subscription(46, "channel_id", "London Overground")
     |> World.create()
 
-    {:ok, message} = CommandRunner.execute(%Command{command: :subscriptions, channel_id: "wrong-channel_id"})
+    {:ok, message} =
+      CommandRunner.execute(%Command{command: :subscriptions, channel_id: "wrong-channel_id"})
+
     assert "You are currently not subscribed to any line" == message
   end
 
   test "adds subscription to world" do
-    World.new
+    World.new()
     |> World.create()
 
-    {:ok, message} = CommandRunner.execute(%Command{command: :subscribe, params: "victoria, northern", channel_id: "channel_id"})
+    {:ok, message} =
+      CommandRunner.execute(%Command{
+        command: :subscribe,
+        params: "victoria, northern",
+        channel_id: "channel_id"
+      })
+
     assert "Subscription saved!" == message
   end
 
-
   test "formats a friendly message upon inexistent command" do
-    World.new
+    World.new()
     |> World.create()
 
     {:error, message} = CommandRunner.execute(%Command{command: ":)"})

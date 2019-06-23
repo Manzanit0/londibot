@@ -1,5 +1,5 @@
 defmodule Londibot.SubscriptionStoreTest do
-  use ExUnit.Case, async: :true
+  use ExUnit.Case, async: true
 
   alias Londibot.Subscription
   alias Londibot.SubscriptionStore
@@ -23,11 +23,9 @@ defmodule Londibot.SubscriptionStoreTest do
     SubscriptionStore.start_link(%Subscription{channel_id: "55"})
     SubscriptionStore.save(%Subscription{channel_id: "33"})
 
-    expected = [
-      %Subscription{channel_id: "55"},
-      %Subscription{channel_id: "33"}]
+    expected = [%Subscription{channel_id: "55"}, %Subscription{channel_id: "33"}]
 
-    assert expected  == SubscriptionStore.all()
+    assert expected == SubscriptionStore.all()
   end
 
   test "can't save subscriptions without a channel_id" do

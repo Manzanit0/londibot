@@ -31,7 +31,10 @@ defmodule Londibot.DisruptionWorkerTest do
     |> World.create()
 
     notifications =
-      [{"Victoria", "Minor delays", "victoria - delay"}, {"Circle", "Minor delays", "circle - delay"}]
+      [
+        {"Victoria", "Minor delays", "victoria - delay"},
+        {"Circle", "Minor delays", "circle - delay"}
+      ]
       |> DisruptionWorker.create_notifications()
 
     assert notifications == [

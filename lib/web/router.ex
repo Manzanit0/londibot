@@ -5,12 +5,14 @@ defmodule Londibot.Router do
   alias Londibot.Web.SlackHandler
   alias Londibot.Web.TelegramHandler
 
-  plug Plug.Logger, log: :debug
-  plug Londibot.Web.DefaultHeadersPlug
+  plug(Plug.Logger, log: :debug)
+  plug(Londibot.Web.DefaultHeadersPlug)
 
-  plug Plug.Parsers, parsers: [:urlencoded, :multipart, :json],
-                     pass: ["text/*", "application/*"],
-                     json_decoder: Poison
+  plug(Plug.Parsers,
+    parsers: [:urlencoded, :multipart, :json],
+    pass: ["text/*", "application/*"],
+    json_decoder: Poison
+  )
 
   plug(:match)
   plug(:dispatch)
@@ -28,7 +30,6 @@ defmodule Londibot.Router do
   end
 
   match(_, do: send_resp(conn, 404, "Nothing found here!"))
-
 
   defp handle_errors(conn, %{kind: kind, reason: reason, stack: stack}) do
     IO.inspect(kind, label: :kind)

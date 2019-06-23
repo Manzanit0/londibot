@@ -26,8 +26,7 @@ defmodule Londibot.SubscriptionStore do
 
   def start_link(subscriptions) do
     start_link([])
-    unless Enum.empty?(subscriptions), do:
-      Enum.each(subscriptions, &save/1)
+    unless Enum.empty?(subscriptions), do: Enum.each(subscriptions, &save/1)
   end
 
   def all, do: Agent.get(__MODULE__, & &1)
@@ -35,9 +34,9 @@ defmodule Londibot.SubscriptionStore do
   def fetch(id), do: Enum.find(all(), fn subscription -> subscription.channel_id == id end)
 
   def save(%Subscription{channel_id: nil}), do: {:error, "missing channel_id"}
-  def save(s), do: Agent.update(__MODULE__, &(upsert(&1, s)))
+  def save(s), do: Agent.update(__MODULE__, &upsert(&1, s))
 
   defp upsert([], s = %Subscription{}), do: [s]
-  defp upsert([%{channel_id: id}|t], s = %Subscription{channel_id: id}), do: [s|t]
-  defp upsert([h|t], s = %Subscription{}), do: [h|upsert(t, s)]
+  defp upsert([%{channel_id: id} | t], s = %Subscription{channel_id: id}), do: [s | t]
+  defp upsert([h | t], s = %Subscription{}), do: [h | upsert(t, s)]
 end

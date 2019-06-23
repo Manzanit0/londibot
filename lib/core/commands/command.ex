@@ -4,6 +4,7 @@ defmodule Londibot.Commands.Command do
   defstruct [:command, :params, :channel_id, :service]
 
   def new(command, params), do: new(command, params, nil)
+
   def new(command, params, channel_id) do
     %Command{command: command, params: params, channel_id: channel_id}
   end
