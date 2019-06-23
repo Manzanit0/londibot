@@ -13,12 +13,15 @@ defmodule Londibot.Web.SlackHandler do
 
   # TODO Potentially wrap execute in a task? and return a custom response?
   def handle(%{"channel_id" => id, "text" => text}) do
-    text
-    |> CommandParser.parse()
-    |> Command.with_channel_id(id)
-    |> Command.with_service(:slack)
-    |> CommandRunner.execute()
-    |> to_response()
+    with %Command{} = command <- CommandParser.parse(text) do
+      command
+      |> Command.with_channel_id(id)
+      |> Command.with_service(:slack)
+      |> CommandRunner.execute()
+      |> to_response()
+    else
+      {:error, message} -> to_response({:error, message})
+    end
   end
 
   # If the user triggers an error, keep it silent and give only him the feedback.
