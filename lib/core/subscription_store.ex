@@ -2,12 +2,6 @@ defmodule Londibot.Subscription do
   defstruct [:id, :channel_id, :tfl_lines, :service]
 end
 
-defmodule Londibot.StoreBehaviour do
-  @callback all() :: list
-  @callback fetch(id :: integer) :: list
-  @callback save(subscription :: map) :: any
-end
-
 defmodule Londibot.SubscriptionStore do
   use Agent
 
