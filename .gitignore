@@ -1,4 +1,6 @@
 .elixir_ls/
+.idea
+londibot.iml
 
 # The directory Mix will write compiled artifacts to.
 /_build/
