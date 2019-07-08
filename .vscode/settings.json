@@ -1,3 +1,4 @@
 {
     "elixirLS.dialyzerEnabled": false,
+    "vim.foldfix": true
 }
