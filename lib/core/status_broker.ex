@@ -24,8 +24,10 @@ defmodule Londibot.StatusBroker do
   end
 
   def get_changes do
-    for {line2, old_status, _} <- get_cached(),
-        {line1, new_status, desc} <- get_latest(),
+    cached = get_cached()
+    latest = get_latest()
+    for {line2, old_status, _} <- cached,
+        {line1, new_status, desc} <- latest,
         line1 == line2 and old_status != new_status,
         into: [] do
       %StatusChange{

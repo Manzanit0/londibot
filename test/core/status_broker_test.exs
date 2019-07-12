@@ -8,17 +8,19 @@ defmodule Londibot.StatusBrokerTest do
 
   setup do
     set_mox_global()
-
-    World.new()
-    |> World.with_disruption("circle", "Severe Delays", "Description about delays")
-    |> World.create()
-
     StatusBroker.start_link()
-
     {:ok, %{}}
   end
 
   test "fetches latest statuses from TFL API" do
+    World.new()
+    |> World.with_disruption(
+      line: "circle",
+      status: "Severe Delays",
+      description: "Description about delays"
+    )
+    |> World.create()
+
     status = StatusBroker.get_latest()
 
     assert status == [
@@ -45,6 +47,14 @@ defmodule Londibot.StatusBrokerTest do
   end
 
   test "upon fetch, statuses are cached" do
+    World.new()
+    |> World.with_disruption(
+      line: "circle",
+      status: "Severe Delays",
+      description: "Description about delays"
+    )
+    |> World.create()
+
     StatusBroker.get_latest()
     status = StatusBroker.get_cached()
 
@@ -68,12 +78,27 @@ defmodule Londibot.StatusBrokerTest do
   end
 
   test "calculates the diff between the cached and the latest statuses" do
+    World.new()
+    |> World.with_disruption(
+      line: "circle",
+      status: "Severe Delays",
+      description: "",
+      starts_after: 0,
+      lasts_for: 1
+    )
+    |> World.with_disruption(
+      line: "northen",
+      status: "Everything is broken",
+      description: "oops",
+      starts_after: 1,
+      lasts_for: 4
+    )
+    |> World.create()
+
+    # Init the Broker
     StatusBroker.get_latest()
 
-    World.new()
-    |> World.with_disruption("northen", "Everything is broken", "oops")
-    |> World.recreate!()
-
+    # Get changes in the system
     diff = StatusBroker.get_changes()
 
     assert [

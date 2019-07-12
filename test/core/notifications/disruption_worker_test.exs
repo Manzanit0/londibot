@@ -47,7 +47,7 @@ defmodule Londibot.DisruptionWorkerTest do
     World.new()
     |> World.with_subscription(2, "456RTY", "Victoria")
     |> World.with_subscription(1, "123QWE", "Circle")
-    |> World.with_disruption("Circle", "Minor Delays", "...")
+    |> World.with_disruption(line: "Circle", status: "Minor Delays", description: "...")
     |> World.create()
 
     notifications = DisruptionWorker.disruption_notifications()
@@ -59,7 +59,7 @@ defmodule Londibot.DisruptionWorkerTest do
     World.new()
     |> World.with_subscription(2, "456RTY", "Victoria")
     |> World.with_subscription(1, "123QWE", "Circle")
-    |> World.with_disruption("Circle", "Minor Delays", "...")
+    |> World.with_disruption(line: "Circle", status: "Minor Delays", description: "...")
     |> World.with_notifications(1)
     |> World.create()
 
@@ -73,7 +73,7 @@ defmodule Londibot.DisruptionWorkerTest do
     |> World.with_subscription(2, "456RTY", "Victoria")
     |> World.with_subscription(1, "123QWE", "Circle")
     |> World.with_subscription(3, "123QWE", "Circle")
-    |> World.with_disruption("Circle", "Minor Delays", "...")
+    |> World.with_disruption(line: "Circle", status: "Minor Delays", description: "...")
     |> World.with_notifications(2)
     |> World.create()
 
