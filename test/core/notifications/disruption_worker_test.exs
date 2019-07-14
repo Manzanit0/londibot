@@ -4,6 +4,7 @@ defmodule Londibot.DisruptionWorkerTest do
   import Mox
 
   alias Londibot.DisruptionWorker
+  alias Londibot.StatusBroker
   alias Londibot.SlackNotification, as: Notification
 
   setup :set_mox_global
@@ -20,8 +21,7 @@ defmodule Londibot.DisruptionWorkerTest do
       )
       |> World.create()
 
-      Londibot.StatusBroker.start_link()
-      Londibot.StatusBroker.get_latest()
+      StatusBroker.start_link()
 
       notifications = DisruptionWorker.create_notifications()
 
@@ -57,8 +57,7 @@ defmodule Londibot.DisruptionWorkerTest do
       |> World.with_notifications(1)
       |> World.create()
 
-      Londibot.StatusBroker.start_link()
-      Londibot.StatusBroker.get_latest()
+      StatusBroker.start_link()
 
       DisruptionWorker.handle_info(:work, %{forever: false, minutes: nil})
 
@@ -78,8 +77,7 @@ defmodule Londibot.DisruptionWorkerTest do
       |> World.with_notifications(2)
       |> World.create()
 
-      Londibot.StatusBroker.start_link()
-      Londibot.StatusBroker.get_latest()
+      StatusBroker.start_link()
 
       DisruptionWorker.handle_info(:work, %{forever: false, minutes: nil})
       DisruptionWorker.handle_info(:work, %{forever: false, minutes: nil})
@@ -104,8 +102,7 @@ defmodule Londibot.DisruptionWorkerTest do
       |> World.with_notifications(1)
       |> World.create()
 
-      Londibot.StatusBroker.start_link()
-      Londibot.StatusBroker.get_latest()
+      StatusBroker.start_link()
 
       DisruptionWorker.start_link(forever: false, minutes: 0.001)
 

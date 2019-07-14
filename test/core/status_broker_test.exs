@@ -6,11 +6,7 @@ defmodule Londibot.StatusBrokerTest do
   alias Londibot.StatusBroker
   alias Londibot.StatusChange
 
-  setup do
-    set_mox_global()
-    StatusBroker.start_link()
-    {:ok, %{}}
-  end
+  setup :set_mox_global
 
   test "fetches latest statuses from TFL API" do
     World.new()
@@ -21,6 +17,7 @@ defmodule Londibot.StatusBrokerTest do
     )
     |> World.create()
 
+    StatusBroker.start_link()
     status = StatusBroker.get_latest()
 
     assert status == [
@@ -42,10 +39,6 @@ defmodule Londibot.StatusBrokerTest do
            ]
   end
 
-  test "statuses aren't cached until fetched" do
-    assert [] == StatusBroker.get_cached()
-  end
-
   test "upon fetch, statuses are cached" do
     World.new()
     |> World.with_disruption(
@@ -55,7 +48,7 @@ defmodule Londibot.StatusBrokerTest do
     )
     |> World.create()
 
-    StatusBroker.get_latest()
+    StatusBroker.start_link()
     status = StatusBroker.get_cached()
 
     assert status == [
@@ -95,10 +88,7 @@ defmodule Londibot.StatusBrokerTest do
     )
     |> World.create()
 
-    # Init the Broker
-    StatusBroker.get_latest()
-
-    # Get changes in the system
+    StatusBroker.start_link()
     diff = StatusBroker.get_changes()
 
     assert [
