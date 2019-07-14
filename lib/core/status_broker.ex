@@ -14,6 +14,7 @@ defmodule Londibot.StatusBroker do
   def start_link do
     Logger.info("Starting StatusBroker")
     Agent.start_link(fn -> [] end, name: __MODULE__)
+    get_latest()
   end
 
   def get_latest do
