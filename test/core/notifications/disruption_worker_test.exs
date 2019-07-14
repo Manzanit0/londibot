@@ -8,81 +8,112 @@ defmodule Londibot.DisruptionWorkerTest do
 
   setup :set_mox_global
 
-  test "generates notifications for two subscriptions to the same disruption" do
-    World.new()
-    |> World.with_subscription(2, "456RTY", "Victoria")
-    |> World.with_subscription(1, "123QWE", "Victoria")
-    |> World.create()
+  describe "create_notifications/0" do
+    test "notifications are created according to status changes" do
+      World.new()
+      |> World.with_subscription("1", "123", "victoria")
+      |> World.with_disruption(
+        line: "victoria",
+        status: "Severe Delays",
+        starts_after: 1,
+        lasts_for: 1
+      )
+      |> World.create()
 
-    notifications =
-      [{"Victoria", "Bad Service", "..."}]
-      |> DisruptionWorker.create_notifications()
+      Londibot.StatusBroker.start_link()
+      Londibot.StatusBroker.get_latest()
 
-    assert notifications == [
-             %Notification{message: "...", channel_id: "123QWE"},
-             %Notification{message: "...", channel_id: "456RTY"}
-           ]
+      notifications = DisruptionWorker.create_notifications()
+
+      assert [
+               %Notification{
+                 channel_id: "123",
+                 message: "victoria line status has changed from Good Service to Severe Delays ()"
+               }
+             ] == notifications
+
+      notifications = DisruptionWorker.create_notifications()
+
+      assert [
+               %Londibot.SlackNotification{
+                 channel_id: "123",
+                 message: "victoria line status has changed from Severe Delays to Good Service ()"
+               }
+             ] == notifications
+    end
   end
 
-  test "generates notifications for two subscriptions to different disruptions" do
-    World.new()
-    |> World.with_subscription(2, "456RTY", "Victoria")
-    |> World.with_subscription(1, "123QWE", "Circle")
-    |> World.create()
+  describe "handle_info/2" do
+    test "sends a notification if a disruption happens" do
+      World.new()
+      |> World.with_subscription("1", "12345", "circle")
+      |> World.with_disruption(
+        line: "circle",
+        status: "Broken",
+        description: "oops",
+        starts_after: 1,
+        lasts_for: 20
+      )
+      |> World.with_notifications(1)
+      |> World.create()
 
-    notifications =
-      [
-        {"Victoria", "Minor delays", "victoria - delay"},
-        {"Circle", "Minor delays", "circle - delay"}
-      ]
-      |> DisruptionWorker.create_notifications()
+      Londibot.StatusBroker.start_link()
+      Londibot.StatusBroker.get_latest()
 
-    assert notifications == [
-             %Notification{message: "victoria - delay", channel_id: "456RTY"},
-             %Notification{message: "circle - delay", channel_id: "123QWE"}
-           ]
+      DisruptionWorker.handle_info(:work, %{forever: false, minutes: nil})
+
+      Mox.verify!(Londibot.NotifierMock)
+    end
+
+    test "sends two notification if a disruption happens and then stops" do
+      World.new()
+      |> World.with_subscription("1", "12345", "circle")
+      |> World.with_disruption(
+        line: "circle",
+        status: "Broken",
+        description: "oops",
+        starts_after: 1,
+        lasts_for: 1
+      )
+      |> World.with_notifications(2)
+      |> World.create()
+
+      Londibot.StatusBroker.start_link()
+      Londibot.StatusBroker.get_latest()
+
+      DisruptionWorker.handle_info(:work, %{forever: false, minutes: nil})
+      DisruptionWorker.handle_info(:work, %{forever: false, minutes: nil})
+
+      Mox.verify!(Londibot.NotifierMock)
+    end
   end
 
-  test "prompts TFL for disruptions and generates notifications" do
-    World.new()
-    |> World.with_subscription(2, "456RTY", "Victoria")
-    |> World.with_subscription(1, "123QWE", "Circle")
-    |> World.with_disruption(line: "Circle", status: "Minor Delays", description: "...")
-    |> World.create()
+  describe "start_link/0" do
+    # This test is just like "sends a notification if a disruption happens"
+    # but with DisruptionWorker.start_link/0 as the entry point.
+    test "starts the worker and sends notifications on disruptions" do
+      World.new()
+      |> World.with_subscription("1", "12345", "circle")
+      |> World.with_disruption(
+        line: "circle",
+        status: "Broken",
+        description: "oops",
+        starts_after: 1,
+        lasts_for: 20
+      )
+      |> World.with_notifications(1)
+      |> World.create()
 
-    notifications = DisruptionWorker.disruption_notifications()
+      Londibot.StatusBroker.start_link()
+      Londibot.StatusBroker.get_latest()
 
-    assert notifications == [%Notification{message: "...", channel_id: "123QWE"}]
-  end
+      DisruptionWorker.start_link(forever: false, minutes: 0.001)
 
-  test "sends notifications based on existing disruptions" do
-    World.new()
-    |> World.with_subscription(2, "456RTY", "Victoria")
-    |> World.with_subscription(1, "123QWE", "Circle")
-    |> World.with_disruption(line: "Circle", status: "Minor Delays", description: "...")
-    |> World.with_notifications(1)
-    |> World.create()
+      # I felt it was better to sleep the thread 100 ms to wait for it
+      # to finish rather than not testing it.
+      :timer.sleep(100)
 
-    DisruptionWorker.handle_info(:work, %{forever: false, minutes: nil})
-
-    Mox.verify!(Londibot.NotifierMock)
-  end
-
-  test "sends notifications asynchronously" do
-    World.new()
-    |> World.with_subscription(2, "456RTY", "Victoria")
-    |> World.with_subscription(1, "123QWE", "Circle")
-    |> World.with_subscription(3, "123QWE", "Circle")
-    |> World.with_disruption(line: "Circle", status: "Minor Delays", description: "...")
-    |> World.with_notifications(2)
-    |> World.create()
-
-    DisruptionWorker.start_link(forever: false, minutes: 0.001)
-
-    # I felt it was better to sleep the thread 100 ms to wait for it
-    # to finish rather than not testing it.
-    :timer.sleep(100)
-
-    Mox.verify!(Londibot.NotifierMock)
+      Mox.verify!(Londibot.NotifierMock)
+    end
   end
 end

@@ -4,12 +4,13 @@ defmodule Londibot.DisruptionWorker do
   require Logger
 
   alias Londibot.Subscription
+  alias Londibot.StatusChange
+  alias Londibot.StatusBroker
   alias Londibot.NotificationFactory
 
   @default_minutes 3
 
   @subscription_store Application.get_env(:londibot, :subscription_store)
-  @tfl_service Application.get_env(:londibot, :tfl_service)
   @notifier Application.get_env(:londibot, :notifier)
 
   def start_link(args \\ []) do
@@ -39,20 +40,13 @@ defmodule Londibot.DisruptionWorker do
     {:noreply, state}
   end
 
-  defp send_all_notifications(), do: Enum.each(disruption_notifications(), &@notifier.send/1)
+  defp send_all_notifications(), do: Enum.each(create_notifications(), &@notifier.send/1)
 
-  def disruption_notifications do
-    @tfl_service.lines()
-    |> @tfl_service.status()
-    |> @tfl_service.disruptions()
-    |> create_notifications()
-  end
-
-  def create_notifications(disruptions) do
-    for {disrupted_line, _, description} <- disruptions,
+  def create_notifications() do
+    for %StatusChange{line: changed_line} = change <- StatusBroker.get_changes(),
         %Subscription{tfl_lines: lines} = s <- @subscription_store.all(),
-        subscribed?(lines, disrupted_line) do
-      NotificationFactory.create(s, description)
+        subscribed?(lines, changed_line) do
+      NotificationFactory.create(s, change)
     end
   end
 

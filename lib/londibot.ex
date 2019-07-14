@@ -11,6 +11,7 @@ defmodule Londibot do
     children = [
       {Plug.Cowboy, scheme: :http, plug: Londibot.Router, options: [port: port]},
       {Londibot.SubscriptionStore, []},
+      {Londibot.StatusBroker, []},
       {Londibot.DisruptionWorker, [forever: true]}
     ]
 
