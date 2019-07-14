@@ -8,8 +8,12 @@ end
 defmodule Londibot.TFL do
   @behaviour Londibot.TFLBehaviour
 
+  @app_id Application.get_env(:londibot, :tfl_app_id)
+  @app_key Application.get_env(:londibot, :tfl_app_key)
+
   def lines do
     "https://api.tfl.gov.uk/Line/Mode/tube%2Cdlr%2Coverground%2Ctflrail"
+    |> add_auth_params()
     |> HTTPoison.get!(recv_timeout: 50000)
     |> Map.get(:body)
     |> Poison.decode!()
@@ -23,7 +27,8 @@ defmodule Londibot.TFL do
   end
 
   def status(lines) when is_binary(lines) do
-    "https://api.tfl.gov.uk/Line/#{lines}/Status?detail=true"
+    "https://api.tfl.gov.uk/Line/#{lines}/Status"
+    |> add_auth_params()
     |> HTTPoison.get!(recv_timeout: 50000)
     |> Map.get(:body)
     |> Poison.decode!()
@@ -40,5 +45,9 @@ defmodule Londibot.TFL do
   defp parse_line(%{"name" => name, "lineStatuses" => statuses}) do
     status = List.first(statuses)
     {name, status["statusSeverityDescription"], status["reason"]}
+  end
+
+  defp add_auth_params(url) do
+    url <> "?app_id=#{@app_id}&app_key=#{@app_key}"
   end
 end
