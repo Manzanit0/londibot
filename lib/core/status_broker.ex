@@ -5,11 +5,14 @@ end
 defmodule Londibot.StatusBroker do
   use Agent
 
+  require Logger
+
   alias Londibot.StatusChange
 
   @tfl_service Application.get_env(:londibot, :tfl_service)
 
   def start_link do
+    Logger.info("Starting StatusBroker")
     Agent.start_link(fn -> [] end, name: __MODULE__)
   end
 
