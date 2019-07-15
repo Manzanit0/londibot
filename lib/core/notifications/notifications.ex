@@ -13,17 +13,42 @@ defmodule Londibot.NotificationFactory do
   alias Londibot.StatusChange
 
   def create(%Subscription{service: :slack} = s, message)
-    when is_binary(message) do
+      when is_binary(message) do
     %SlackNotification{message: message, channel_id: s.channel_id}
   end
 
   def create(%Subscription{service: :telegram} = s, message)
-    when is_binary(message) do
+      when is_binary(message) do
     %TelegramNotification{message: message, channel_id: s.channel_id}
   end
 
   def create(%Subscription{} = s, %StatusChange{} = change) do
-    message = "#{change.line} line status has changed from #{change.previous_status} to #{change.new_status} (#{change.description})"
-    create(s, message)
+    msg = message(change)
+    create(s, msg)
+  end
+
+  defp message(%StatusChange{previous_status: previous, new_status: "Good Service", line: line}) do
+    "✅ #{line} line status has changed from #{previous} to Good Service"
+  end
+
+  defp message(%StatusChange{
+         previous_status: previous,
+         new_status: new,
+         line: line,
+         description: desc
+       })
+       when new == "Closed" or new == "Not Running" do
+    msg = "🚫 #{line} line status has changed from #{previous} to #{new}"
+    if desc, do: msg <> " (#{desc})", else: msg
+  end
+
+  defp message(%StatusChange{
+         previous_status: previous,
+         new_status: new,
+         description: desc,
+         line: line
+       }) do
+    msg = "⚠️ #{line} line status has changed from #{previous} to #{new}"
+    if desc, do: msg <> " (#{desc})", else: msg
   end
 end
