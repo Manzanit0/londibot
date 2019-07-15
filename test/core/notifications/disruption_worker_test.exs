@@ -28,7 +28,7 @@ defmodule Londibot.DisruptionWorkerTest do
       assert [
                %Notification{
                  channel_id: "123",
-                 message: "victoria line status has changed from Good Service to Severe Delays ()"
+                 message: "⚠️ victoria line status has changed from Good Service to Severe Delays"
                }
              ] == notifications
 
@@ -37,7 +37,7 @@ defmodule Londibot.DisruptionWorkerTest do
       assert [
                %Londibot.SlackNotification{
                  channel_id: "123",
-                 message: "victoria line status has changed from Severe Delays to Good Service ()"
+                 message: "✅ victoria line status has changed from Severe Delays to Good Service"
                }
              ] == notifications
     end
