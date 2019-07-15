@@ -7,6 +7,7 @@ defmodule Londibot.Commands.CommandRunnerTest do
   test "formats line statuses as a report" do
     World.new()
     |> World.with_disruption(line: "Circle", status: "Minor Delays", description: "...")
+    |> World.with_disruption(line: "Jubilee", status: "Closed", description: "...")
     |> World.create()
 
     {:ok, result} = CommandRunner.execute(%Command{command: :status})
@@ -14,8 +15,9 @@ defmodule Londibot.Commands.CommandRunnerTest do
     # World prints returns the information for all the lines.
     # The interesting thing to test here is that CommandRunner returns
     # a text with some of the info.
-    assert String.contains?(result, "*Circle:* Minor Delays\n")
-    assert String.contains?(result, "*victoria:* Good Service\n")
+    assert String.contains?(result, "🚫 Jubilee: Closed\n")
+    assert String.contains?(result, "⚠️ Circle: Minor Delays\n")
+    assert String.contains?(result, "✅ victoria: Good Service\n")
   end
 
   test "formats disruptions as a report" do
