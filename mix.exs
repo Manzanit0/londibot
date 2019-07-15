@@ -25,7 +25,8 @@ defmodule Londibot.MixProject do
     [
       {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 1.4"},
-      {:poison, "~> 4.0.1"},
+      {:poison, "~> 3.0"},
+      {:bugsnag, "~> 1.7.0"},
       {:mox, "~> 0.5.0", only: :test},
       {:excoveralls, "~> 0.11.1", only: :test}
     ]

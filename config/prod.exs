@@ -6,6 +6,8 @@ config :londibot, :telegram_token, System.get_env("LONDIBOT_TELEGRAM")
 config :londibot, :tfl_app_id, System.get_env("TFL_APP_ID")
 config :londibot, :tfl_app_key, System.get_env("TFL_APP_KEY")
 
+config :bugsnag, api_key: System.get_env("BUGSNAG_API_KEY")
+
 config :logger, level: :info
 
 config :londibot, :tfl_service, Londibot.TFL
