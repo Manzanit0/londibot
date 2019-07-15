@@ -1,4 +1,6 @@
 defmodule Londibot.Web.TelegramHandler do
+  require Logger
+
   alias Londibot.Commands.Command
   alias Londibot.Commands.CommandRunner
   alias Londibot.Web.CommandParser
@@ -17,6 +19,13 @@ defmodule Londibot.Web.TelegramHandler do
     else
       {:error, message} -> to_response({:error, message}, id)
     end
+  end
+
+  # Unless it's a text message, return empty body, a.k.a, ignore the message
+  def handle(unknown_message) do
+    Logger.warn("Unknown message received via Telegram: #{inspect(unknown_message)}")
+    Bugsnag.report(unknown_message)
+    ""
   end
 
   # Telegram commmands, unlike Slack, come with the leading slash.
