@@ -70,6 +70,7 @@ defmodule Londibot.Commands.CommandRunner do
 
   defp status({name, "Good Service", _}), do: "✅ #{name}: Good Service"
   defp status({name, "Closed", _}), do: "🚫 #{name}: Closed"
+  defp status({name, "Service Closed", _}), do: "🚫 #{name}: Service Closed"
   defp status({name, "Not Running", _}), do: "🚫 #{name}: Not Running"
   defp status({name, status, _}), do: "⚠️ #{name}: #{status}"
 end

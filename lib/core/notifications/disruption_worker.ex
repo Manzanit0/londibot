@@ -43,12 +43,18 @@ defmodule Londibot.DisruptionWorker do
   defp send_all_notifications(), do: Enum.each(create_notifications(), &@notifier.send/1)
 
   def create_notifications() do
-    for %StatusChange{line: changed_line} = change <- StatusBroker.get_changes(),
-        %Subscription{tfl_lines: lines} = s <- @subscription_store.all(),
-        subscribed?(lines, changed_line) do
-      NotificationFactory.create(s, change)
+    for %StatusChange{line: changed_line, description: description} = change <-
+          StatusBroker.get_changes(),
+        %Subscription{tfl_lines: lines} = subscription <- @subscription_store.all(),
+        subscribed?(lines, changed_line) and open?(description) do
+      NotificationFactory.create(subscription, change)
     end
   end
+
+  defp open?(nil), do: true
+
+  defp open?(description) when is_binary(description),
+    do: !String.contains?(description, "resumes later this morning")
 
   defp subscribed?(subscribed_lines, disrupted_line) do
     Enum.any?(subscribed_lines, fn x ->
