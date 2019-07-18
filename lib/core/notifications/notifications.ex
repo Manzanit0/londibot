@@ -38,7 +38,7 @@ defmodule Londibot.NotificationFactory do
          description: desc
        })
        when new == "Closed" or new == "Not Running" do
-    msg = "🚫 #{line} line status has changed from #{previous} to #{new}"
+    msg = "🚫 *#{line}* line status has changed from #{previous} to *#{new}*"
     if desc, do: msg <> " (#{desc})", else: msg
   end
 
@@ -48,7 +48,7 @@ defmodule Londibot.NotificationFactory do
          description: desc,
          line: line
        }) do
-    msg = "⚠️ #{line} line status has changed from #{previous} to #{new}"
+    msg = "⚠️ *#{line}* line status has changed from #{previous} to *#{new}*"
     if desc, do: msg <> " (#{desc})", else: msg
   end
 end
