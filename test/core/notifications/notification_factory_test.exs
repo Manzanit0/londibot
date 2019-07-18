@@ -35,7 +35,7 @@ defmodule Londibot.NotificationFactoryTest do
 
     assert %SlackNotification{
              message:
-               "⚠️ victoria line status has changed from Good Service to Severe Delays (Due to passenger not minding the gap)",
+               "⚠️ *victoria* line status has changed from Good Service to *Severe Delays* (Due to passenger not minding the gap)",
              channel_id: "123"
            } == notification
   end
@@ -69,7 +69,7 @@ defmodule Londibot.NotificationFactoryTest do
     notification = NotificationFactory.create(s, c)
 
     assert %TelegramNotification{
-             message: "🚫 victoria line status has changed from Severe Delays to Closed",
+             message: "🚫 *victoria* line status has changed from Severe Delays to *Closed*",
              channel_id: "123"
            } == notification
   end
