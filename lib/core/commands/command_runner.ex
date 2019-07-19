@@ -33,14 +33,23 @@ defmodule Londibot.Commands.CommandRunner do
     {:ok, message}
   end
 
-  def execute(%Command{command: :subscribe, params: p, channel_id: c, service: s}) do
-    subscription = %Subscription{channel_id: c, tfl_lines: p, service: s}
-    @subscription_store.save(subscription)
+  def execute(%Command{command: :subscribe, params: p, channel_id: channel, service: s}) do
+    channel
+    |> fetch_subscription(s)
+    |> Subscription.with(p)
+    |> @subscription_store.save()
 
     {:ok, "Subscription saved!"}
   end
 
   def execute(_), do: {:error, "The command you just tried doesn't exist!"}
+
+  defp fetch_subscription(channel_id, service) do
+    case @subscription_store.fetch(channel_id) do
+      nil -> %Subscription{channel_id: channel_id, service: service}
+      subscription -> subscription
+    end
+  end
 
   defp to_subscriptions_message(subscriptions) do
     message =

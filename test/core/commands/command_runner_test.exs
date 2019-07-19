@@ -60,7 +60,7 @@ defmodule Londibot.Commands.CommandRunnerTest do
     {:ok, message} =
       CommandRunner.execute(%Command{
         command: :subscribe,
-        params: "victoria, northern",
+        params: ["victoria", "northern"],
         channel_id: "channel_id"
       })
 
