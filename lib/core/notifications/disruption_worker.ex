@@ -45,8 +45,8 @@ defmodule Londibot.DisruptionWorker do
   def create_notifications() do
     for %StatusChange{line: changed_line, description: description} = change <-
           StatusBroker.get_changes(),
-        %Subscription{tfl_lines: lines} = subscription <- @subscription_store.all(),
-        subscribed?(lines, changed_line) and open?(description) do
+        subscription <- @subscription_store.all(),
+        Subscription.subscribed?(subscription, changed_line) and open?(description) do
       NotificationFactory.create(subscription, change)
     end
   end
@@ -55,12 +55,6 @@ defmodule Londibot.DisruptionWorker do
 
   defp open?(description) when is_binary(description),
     do: !String.contains?(description, "resumes later this morning")
-
-  defp subscribed?(subscribed_lines, disrupted_line) do
-    Enum.any?(subscribed_lines, fn x ->
-      String.downcase(x) == String.downcase(disrupted_line)
-    end)
-  end
 
   defp schedule_work(minutes) do
     milliseconds = to_milliseconds(minutes)

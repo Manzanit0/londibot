@@ -36,6 +36,24 @@ defmodule Londibot.SubscriptionTest do
     |> assert_contains_line("central line")
   end
 
+  test "a subscription is subscribed to a line" do
+    subscribed? =
+      Subscription.new()
+      |> Subscription.with("victoria")
+      |> Subscription.subscribed?("victoria")
+
+    assert subscribed?
+  end
+
+  test "a subscription isn't subscribed to a line" do
+    subscribed? =
+      Subscription.new()
+      |> Subscription.with("victoria")
+      |> Subscription.subscribed?("circle")
+
+    assert subscribed? == false
+  end
+
   def assert_contains_line(%{tfl_lines: lines} = subscription, line) do
     assert Enum.member?(lines, line)
 

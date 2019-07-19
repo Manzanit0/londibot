@@ -12,7 +12,12 @@ defmodule Londibot.Subscription do
     %Subscription{}
   end
 
-  def with(%Subscription{} = s, new_line) when is_binary(new_line), do: Subscription.with(s, [new_line])
+  def subscribed?(%Subscription{tfl_lines: lines}, line) when is_binary(line) do
+    Enum.any?(lines, fn x -> String.downcase(x) == String.downcase(line) end)
+  end
+
+  def with(%Subscription{} = s, new_line) when is_binary(new_line),
+    do: Subscription.with(s, [new_line])
 
   def with(%Subscription{tfl_lines: lines} = s, new_lines) do
     final =
@@ -20,6 +25,7 @@ defmodule Londibot.Subscription do
       |> Kernel.++(new_lines)
       |> Enum.uniq()
       |> curate_list()
+
     %Subscription{s | tfl_lines: final}
   end
 
@@ -31,6 +37,7 @@ defmodule Londibot.Subscription do
       |> Kernel.--(unwanted_lines)
       |> Enum.uniq()
       |> curate_list()
+
     %Subscription{s | tfl_lines: final}
   end
 
