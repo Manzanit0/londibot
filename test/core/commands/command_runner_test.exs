@@ -65,6 +65,22 @@ defmodule Londibot.Commands.CommandRunnerTest do
       })
 
     assert "Subscription saved!" == message
+    # TODO - Verify that the subscription has been updated
+  end
+
+  test "remove subscription to world" do
+    World.new()
+    |> World.create()
+
+    {:ok, message} =
+      CommandRunner.execute(%Command{
+        command: :unsubscribe,
+        params: ["victoria", "northern"],
+        channel_id: "channel_id"
+      })
+
+    assert "Subscription saved!" == message
+    # TODO - Verify that the subscription has been updated
   end
 
   test "formats a friendly message upon inexistent command" do

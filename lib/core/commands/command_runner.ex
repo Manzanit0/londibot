@@ -42,6 +42,15 @@ defmodule Londibot.Commands.CommandRunner do
     {:ok, "Subscription saved!"}
   end
 
+  def execute(%Command{command: :unsubscribe, params: p, channel_id: channel, service: s}) do
+    channel
+    |> fetch_subscription(s)
+    |> Subscription.without(p)
+    |> @subscription_store.save()
+
+    {:ok, "Subscription saved!"}
+  end
+
   def execute(_), do: {:error, "The command you just tried doesn't exist!"}
 
   defp fetch_subscription(channel_id, service) do
