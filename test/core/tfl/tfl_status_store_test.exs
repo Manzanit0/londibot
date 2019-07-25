@@ -30,12 +30,12 @@ defmodule Londibot.TFLStatusStoreTest do
     victoria = TFLStatusStore.fetch("victoria")
 
     assert "Severe Delays" == circle.status
-    assert "Description about delays" == circle.status_verbose
+    assert "Description about delays" == circle.description
     assert nil != circle.last_updated_on
     assert nil != circle.last_disruption_on
 
     assert "Good Service" == victoria.status
-    assert "" == victoria.status_verbose
+    assert "" == victoria.description
     assert nil != circle.last_updated_on
     assert nil == victoria.last_disruption_on
   end

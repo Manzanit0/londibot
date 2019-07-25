@@ -42,6 +42,12 @@ defmodule Londibot.TFL do
     |> Enum.filter(fn {_, status, _} -> status != "Good Service" end)
   end
 
+  def open?(%{description: nil}), do: true
+
+  def open?(%{description: desc}) when is_binary(desc) do
+    !String.contains?(desc, "resumes later this morning")
+  end
+
   defp parse_line(%{"name" => name, "lineStatuses" => statuses}) do
     status = List.first(statuses)
     {name, status["statusSeverityDescription"], status["reason"]}

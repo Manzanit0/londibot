@@ -1,5 +1,5 @@
 defmodule Londibot.TFLLine do
-  defstruct [:name, :status, :status_verbose, :last_disruption_on, :last_updated_on]
+  defstruct [:name, :status, :description, :last_disruption_on, :last_updated_on]
 end
 
 defmodule Londibot.TFLStatusStore do
@@ -45,7 +45,7 @@ defmodule Londibot.TFLStatusStore do
     %TFLLine{
       name: name,
       status: status,
-      status_verbose: description,
+      description: description,
       last_disruption_on: disrupted_on,
       last_updated_on: time
     }

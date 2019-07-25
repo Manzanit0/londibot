@@ -3,6 +3,7 @@ defmodule Londibot.DisruptionWorker do
 
   require Logger
 
+  alias Londibot.TFL
   alias Londibot.Subscription
   alias Londibot.StatusChange
   alias Londibot.StatusBroker
@@ -43,18 +44,12 @@ defmodule Londibot.DisruptionWorker do
   defp send_all_notifications(), do: Enum.each(create_notifications(), &@notifier.send/1)
 
   def create_notifications() do
-    for %StatusChange{line: changed_line, description: description} = change <-
-          StatusBroker.get_changes(),
+    for %StatusChange{line: changed_line} = change <- StatusBroker.get_changes(),
         subscription <- @subscription_store.all(),
-        Subscription.subscribed?(subscription, changed_line) and open?(description) do
+        Subscription.subscribed?(subscription, changed_line) and TFL.open?(change) do
       NotificationFactory.create(subscription, change)
     end
   end
-
-  defp open?(nil), do: true
-
-  defp open?(description) when is_binary(description),
-    do: !String.contains?(description, "resumes later this morning")
 
   defp schedule_work(minutes) do
     milliseconds = to_milliseconds(minutes)
