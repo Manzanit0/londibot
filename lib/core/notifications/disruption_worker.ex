@@ -46,7 +46,7 @@ defmodule Londibot.DisruptionWorker do
   def create_notifications() do
     for %StatusChange{line: changed_line} = change <- StatusBroker.get_changes(),
         subscription <- @subscription_store.all(),
-        Subscription.subscribed?(subscription, changed_line) and TFL.open?(change) do
+        Subscription.subscribed?(subscription, changed_line) and not TFL.routinary?(change) do
       NotificationFactory.create(subscription, change)
     end
   end

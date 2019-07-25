@@ -6,6 +6,8 @@ defmodule Londibot.TFLBehaviour do
 end
 
 defmodule Londibot.TFL do
+  alias Londibot.StatusChange
+
   @behaviour Londibot.TFLBehaviour
 
   @app_id Application.get_env(:londibot, :tfl_app_id)
@@ -42,11 +44,37 @@ defmodule Londibot.TFL do
     |> Enum.filter(fn {_, status, _} -> status != "Good Service" end)
   end
 
-  def open?(%{description: nil}), do: true
+  @doc """
+  Checks if the `StatusChange` is a routinary/scheduled change, or if it's a proper
+  unexpected change, i.e. nightly service closing.
 
-  def open?(%{description: desc}) when is_binary(desc) do
-    !String.contains?(desc, "resumes later this morning")
+  Returns `true` or `false.
+
+  The known cases are:
+  - Service Closed -> Good Service: daily service opening
+  - description contains `Train service will resume later this morning`: nightly service closure
+
+  ## Examples
+
+      iex> service_on = %Londibot.StatusChange{previous_status: "Service Closed", new_status: "Good Service"}
+      iex> Londibot.TFL.routinary?(service_on)
+      true
+
+      iex> abnormal_disruption = %Londibot.StatusChange{previous_status: "Severe Delays", new_status: "Good Service"}
+      iex> Londibot.TFL.routinary?(abnormal_disruption)
+      false
+
+      iex> service_down = %Londibot.StatusChange{description: "Victoria line status has changed from Good Service to Service Closed (Victoria Line: Train service will resume later this morning. )"}
+      iex> Londibot.TFL.routinary?(service_down)
+      true
+  """
+  def routinary?(%StatusChange{previous_status: "Service Closed", new_status: "Good Service"}), do: true
+
+  def routinary?(%StatusChange{description: desc}) when is_binary(desc) do
+    String.contains?(desc, "Train service will resume later this morning")
   end
+
+  def routinary?(_), do: false
 
   defp parse_line(%{"name" => name, "lineStatuses" => statuses}) do
     status = List.first(statuses)
