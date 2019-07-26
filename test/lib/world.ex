@@ -71,11 +71,6 @@ defmodule World do
     setup_notifier(n)
   end
 
-  def recreate!(%World{} = world) do
-    reset_mox_server()
-    create(world)
-  end
-
   def setup_notifier(expected_notifications) do
     Application.get_env(:londibot, :notifier)
     |> expect(:send, expected_notifications, fn x -> x end)
@@ -135,9 +130,4 @@ defmodule World do
 
   defp same_line?({disrupted_line, _, _}, line),
     do: String.downcase(disrupted_line) == String.downcase(line)
-
-  defp reset_mox_server do
-    Mox.Server.exit(self())
-    Application.ensure_all_started(:mox)
-  end
 end
