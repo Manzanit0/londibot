@@ -6,7 +6,6 @@ defmodule Util do
     message = "#{optional_head} – #{inspect(error)}"
 
     case Keyword.get(opts, :severity) do
-      :info -> Logger.info(message)
       :warn -> Logger.warn(message)
       :error -> Logger.error(message)
     end
