@@ -56,4 +56,8 @@ defmodule Londibot.Web.TelegramHandlerTest do
     \"chat_id\":\"123\"}\
     """
   end
+
+  test "Upon unknown body params, ignore the message" do
+    assert "" == TelegramHandler.handle(%{"channel_id" => "123", "text" => "break pls!"})
+  end
 end
