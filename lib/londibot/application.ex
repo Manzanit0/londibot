@@ -9,7 +9,7 @@ defmodule Londibot.Application do
     port = String.to_integer(System.get_env("PORT") || "4000")
 
     children = [
-      {Plug.Cowboy, scheme: :http, plug: Londibot.Router, options: [port: port]},
+      {Plug.Cowboy, scheme: :http, plug: Londibot.Web.Router, options: [port: port]},
       {Londibot.SubscriptionStore, []},
       {Londibot.StatusBroker, []},
       {Londibot.DisruptionWorker, [forever: true]}

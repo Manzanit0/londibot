@@ -1,4 +1,4 @@
-defmodule Londibot.Router do
+defmodule Londibot.Web.Router do
   use Plug.Router
   use Plug.ErrorHandler
 

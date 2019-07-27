@@ -2,7 +2,7 @@ defmodule Londibot.RouterTest do
   use ExUnit.Case, async: true
   use Plug.Test
 
-  alias Londibot.Router
+  alias Londibot.Web.Router
 
   @opts Router.init([])
 
