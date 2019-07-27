@@ -1,12 +1,13 @@
 defmodule Londibot.Subscription do
-  alias Londibot.Subscription
+  alias __MODULE__
 
-  defstruct(
-    id: "",
-    channel_id: nil,
-    tfl_lines: [],
-    service: nil
-  )
+  use Ecto.Schema
+
+  schema "subscriptions" do
+    field(:channel_id, :string)
+    field(:tfl_lines, {:array, :string}, default: [])
+    field(:service, :string)
+  end
 
   def new() do
     %Subscription{}
