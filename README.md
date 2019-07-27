@@ -19,15 +19,15 @@ change, be it a disruption or a recovery. It supports a wide variety of commands
 
 ## And technically, how is it structured?
 
-Since Londibot has been the application through which I have gottent aquainted with Elixir (it started as Clojure, but ((((¯\_(ツ)_/¯))))), it has
-suffered many major changes. Currently Londibot is structured in two major sections – core and web.
+Since Londibot has been the application through which I have gotten aquainted with Elixir (it started as Clojure, but ((((¯\_(ツ)_/¯))))), it has
+suffered many major changes. Currently Londibot is structured in different blocks.
 
-Londibot core contains a set of modules which:
-- Connect with TFL API via HTTP
-- CRUDs subscriptions to transport lines
-- Notifies users via the specified channel (Telegram/Slack) upon status changes
-
-While Londibot web simply contains a web handler which parses and dispatches incoming requests from the set up webhooks.
+- **TFL**, takes care of connecting via HTTP with the TFL API and adding the logic of which statuses are good, bad, etc.
+- **Subscriptions**, is in charge of handling user subscriptions to lines. It saves and queries them.
+- **Notifications** is one of the bigger blocks. It contains the different wrappers for the Slack/Telegram messaging APIs as well as a worker
+which polls TFL and discerns when to send a message or not.
+- **Commands** contains the logic to be executed for each command sent to the bot.
+- **Web** is basically the handlers of the webhooks for the Slack and Telegram APIs.
 
 ## Using Londibot
 
