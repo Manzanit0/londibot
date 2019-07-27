@@ -27,6 +27,8 @@ defmodule Londibot.MixProject do
       {:httpoison, "~> 1.4"},
       {:poison, "~> 3.0"},
       {:bugsnag, "~> 1.7.0"},
+      {:ecto_sql, "~> 3.0"},
+      {:postgrex, ">= 0.0.0"},
       {:mox, "~> 0.5.0", only: :test},
       {:excoveralls, "~> 0.11.1", only: :test}
     ]
