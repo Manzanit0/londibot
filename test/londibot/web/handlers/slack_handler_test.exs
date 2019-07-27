@@ -1,7 +1,7 @@
-defmodule Londibot.Web.SlackHandlerTest do
+defmodule Londibot.Web.Handlers.SlackHandlerTest do
   use ExUnit.Case
 
-  alias Londibot.Web.SlackHandler
+  alias Londibot.Web.Handlers.SlackHandler
 
   test "handles SSL checks" do
     ssl_check_request = %{"ssl_check" => "???", "token" => "some-token"}

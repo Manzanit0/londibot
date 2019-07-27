@@ -1,7 +1,7 @@
-defmodule Londibot.Web.TelegramHandlerTest do
+defmodule Londibot.Web.Handlers.TelegramHandlerTest do
   use ExUnit.Case
 
-  alias Londibot.Web.TelegramHandler
+  alias Londibot.Web.Handlers.TelegramHandler
 
   test "status request returns all the statuses" do
     World.new()

@@ -2,8 +2,8 @@ defmodule Londibot.Web.Router do
   use Plug.Router
   use Plug.ErrorHandler
 
-  alias Londibot.Web.SlackHandler
-  alias Londibot.Web.TelegramHandler
+  alias Londibot.Web.Handlers.SlackHandler
+  alias Londibot.Web.Handlers.TelegramHandler
 
   plug(Plug.Logger, log: :debug)
   plug(Londibot.Web.DefaultHeadersPlug)
