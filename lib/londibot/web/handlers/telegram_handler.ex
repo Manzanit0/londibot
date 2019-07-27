@@ -1,4 +1,4 @@
-defmodule Londibot.Web.TelegramHandler do
+defmodule Londibot.Web.Handlers.TelegramHandler do
   require Logger
 
   alias Londibot.Commands.Command

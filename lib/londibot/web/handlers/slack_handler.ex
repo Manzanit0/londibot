@@ -1,4 +1,4 @@
-defmodule Londibot.Web.SlackHandler do
+defmodule Londibot.Web.Handlers.SlackHandler do
   alias Londibot.Commands.Command
   alias Londibot.Commands.CommandRunner
   alias Londibot.Web.CommandParser
