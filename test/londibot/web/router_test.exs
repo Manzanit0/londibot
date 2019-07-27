@@ -1,4 +1,4 @@
-defmodule Londibot.RouterTest do
+defmodule Londibot.Web.RouterTest do
   use ExUnit.Case, async: true
   use Plug.Test
 
