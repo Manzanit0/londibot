@@ -17,7 +17,7 @@ defmodule Londibot.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {Londibot, []}
+      mod: {Londibot.Application, []}
     ]
   end
 

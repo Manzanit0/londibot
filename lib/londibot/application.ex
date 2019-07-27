@@ -1,4 +1,4 @@
-defmodule Londibot do
+defmodule Londibot.Application do
   use Application
 
   require Logger
