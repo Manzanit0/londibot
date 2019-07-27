@@ -64,3 +64,13 @@ mix run --no-halt
 ```
 
 To run the tests, run: `mix test`.
+
+### Setting up the DB
+
+To save user subscriptions, I've decided to go with Postgres (PG). Before continuing, make sure you have a running instance in your computer.
+In case you're running MacOS, I find it very convenient to use homebrew services to start and stop the DB:
+
+Starting PG: `brew services start postgresql`
+Stoping PG: `brew services stop postgresql`
+
+Once you have the PG up and running, to create the DB run: `mix ecto.create && mix ecto.migrate` (make sure to have a user `postgres` without password and superuser role).
