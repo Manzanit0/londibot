@@ -68,7 +68,8 @@ defmodule Londibot.TFL do
       iex> Londibot.TFL.routinary?(service_down)
       true
   """
-  def routinary?(%StatusChange{previous_status: "Service Closed", new_status: "Good Service"}), do: true
+  def routinary?(%StatusChange{previous_status: "Service Closed", new_status: "Good Service"}),
+    do: true
 
   def routinary?(%StatusChange{description: desc}) when is_binary(desc) do
     String.contains?(desc, "Train service will resume later this morning")

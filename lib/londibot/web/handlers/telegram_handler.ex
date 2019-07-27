@@ -23,7 +23,11 @@ defmodule Londibot.Web.TelegramHandler do
 
   # Unless it's a text message, return empty body, a.k.a, ignore the message
   def handle(unknown_message) do
-    Util.track_error(unknown_message, severity: :warn, message: "Unknown message received via Telegram")
+    Util.track_error(unknown_message,
+      severity: :warn,
+      message: "Unknown message received via Telegram"
+    )
+
     ""
   end
 

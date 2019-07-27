@@ -17,29 +17,33 @@ defmodule Londibot.Web.SlackHandlerTest do
     response = SlackHandler.handle(%{"channel_id" => "123", "text" => "status"})
 
     assert response == """
-    {\"text\":\"\
-    ✅ circle: Good Service\\n\
-    ✅ district: Good Service\\n\
-    ✅ dlr: Good Service\\n\
-    ✅ hammersmith & city: Good Service\\n\
-    ✅ london overground: Good Service\\n\
-    ✅ metropolitan: Good Service\\n\
-    ✅ waterloo & city: Good Service\\n\
-    ✅ bakerloo: Good Service\\n\
-    ✅ central: Good Service\\n\
-    ✅ jubilee: Good Service\\n\
-    ✅ northen: Good Service\\n\
-    ✅ picadilly: Good Service\\n\
-    ⚠️ victoria: Severe Delays\\n\
-    ✅ tfl rail: Good Service\\n\
-    ✅ tram: Good Service\",\
-    \"response_type\":\"in_channel\"}\
-    """
+           {\"text\":\"\
+           ✅ circle: Good Service\\n\
+           ✅ district: Good Service\\n\
+           ✅ dlr: Good Service\\n\
+           ✅ hammersmith & city: Good Service\\n\
+           ✅ london overground: Good Service\\n\
+           ✅ metropolitan: Good Service\\n\
+           ✅ waterloo & city: Good Service\\n\
+           ✅ bakerloo: Good Service\\n\
+           ✅ central: Good Service\\n\
+           ✅ jubilee: Good Service\\n\
+           ✅ northen: Good Service\\n\
+           ✅ picadilly: Good Service\\n\
+           ⚠️ victoria: Severe Delays\\n\
+           ✅ tfl rail: Good Service\\n\
+           ✅ tram: Good Service\",\
+           \"response_type\":\"in_channel\"}\
+           """
   end
 
   test "disruptions request returns only the description of the disrupted statuses" do
     World.new()
-    |> World.with_disruption(line: "bakerloo", status: "Severe Delays", description: "BAKERLOO LINE: oops")
+    |> World.with_disruption(
+      line: "bakerloo",
+      status: "Severe Delays",
+      description: "BAKERLOO LINE: oops"
+    )
     |> World.create()
 
     response = SlackHandler.handle(%{"channel_id" => "123", "text" => "disruptions"})

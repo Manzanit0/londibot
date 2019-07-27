@@ -22,7 +22,11 @@ defmodule Londibot.Commands.CommandRunnerTest do
 
   test "formats disruptions as a report" do
     World.new()
-    |> World.with_disruption(line: "Circle", status: "Minor Delays", description: "CIRCLE: Minor delays due to...")
+    |> World.with_disruption(
+      line: "Circle",
+      status: "Minor Delays",
+      description: "CIRCLE: Minor delays due to..."
+    )
     |> World.create()
 
     {:ok, message} = CommandRunner.execute(%Command{command: :disruptions})
