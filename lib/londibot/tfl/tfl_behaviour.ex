@@ -4,4 +4,3 @@ defmodule Londibot.TFLBehaviour do
   @callback status(String.t()) :: String.t()
   @callback disruptions(list) :: list
 end
-
