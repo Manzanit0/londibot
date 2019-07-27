@@ -29,6 +29,31 @@ Londibot core contains a set of modules which:
 
 While Londibot web simply contains a web handler which parses and dispatches incoming requests from the set up webhooks.
 
+## Using Londibot
+
+Currently Londibot supports multiple commands, slightly different across services to improve UX.
+
+### Telegram
+
+In case you're using the Telegram bot, different slash commands have been provided to make the bot more discoverable.
+
+- `/status` will respond with a brief summary of all lines' status, like the dashboard you can find in the subway.
+- `/disruptions` will respond just with the current disruptions in all the transport network
+- `/subscriptions` will respond with a list of lines to which you are subscribed
+- `/subscribe circle, london overground` will subscribe to the given lines
+- `/unsubscribe victoria, northern` will unsubscribe to the given lines
+
+### Slack
+
+To use Londibot via Slack, a slash command has been set up: `/londibot`. I have opted for having a single slash command since often 
+Slack installations will have many bots and having too many slash commands ends up in being more confusing.
+
+- `/londibot status` will respond with a brief summary of all lines' status, like the dashboard you can find in the subway.
+- `/londibot disruptions` will respond just with the current disruptions in all the transport network
+- `/londibot subscriptions` will respond with a list of lines to which you are subscribed
+- `/londibot subscribe circle, london overground` will subscribe to the given lines
+- `/londibot unsubscribe victoria, northern` will unsubscribe to the given lines
+
 ## Getting started
 
 Simply clone the repository and run:
