@@ -5,7 +5,6 @@ config :londibot, Londibot.Repo,
   username: "postgres",
   hostname: "localhost"
 
-
 config :londibot, ecto_repos: [Londibot.Repo]
 
 import_config "#{Mix.env()}.exs"

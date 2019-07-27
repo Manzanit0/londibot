@@ -10,7 +10,11 @@ defmodule Londibot.TFLStatusStoreTest do
     set_mox_global()
 
     World.new()
-    |> World.with_disruption(line: "circle", status: "Severe Delays", description: "Description about delays")
+    |> World.with_disruption(
+      line: "circle",
+      status: "Severe Delays",
+      description: "Description about delays"
+    )
     |> World.create()
 
     {:ok, %{}}

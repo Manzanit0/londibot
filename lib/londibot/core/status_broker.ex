@@ -12,6 +12,7 @@ defmodule Londibot.StatusBroker do
   @tfl_service Application.get_env(:londibot, :tfl_service)
 
   def start_link(_), do: start_link()
+
   def start_link do
     Logger.info("Starting StatusBroker")
 
@@ -32,6 +33,7 @@ defmodule Londibot.StatusBroker do
   def get_changes do
     cached = get_cached()
     latest = get_latest()
+
     for {line2, old_status, _} <- cached,
         {line1, new_status, desc} <- latest,
         line1 == line2 and old_status != new_status,
