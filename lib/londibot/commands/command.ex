@@ -10,7 +10,7 @@ defmodule Londibot.Commands.Command do
   end
 
   def with_channel_id(%Command{} = c, channel_id) do
-    %Command{c | channel_id: channel_id}
+    %Command{c | channel_id: to_string(channel_id)}
   end
 
   def with_service(%Command{} = c, service) do
