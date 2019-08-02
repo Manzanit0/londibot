@@ -1,5 +1,11 @@
 use Mix.Config
 
+config :londibot, Londibot.Repo,
+  database: "londibot_repo",
+  username: "postgres",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox
+
 config :londibot, :slack_token, System.get_env("LONDIBOT_SLACK")
 config :londibot, :telegram_token, System.get_env("LONDIBOT_TELEGRAM")
 
