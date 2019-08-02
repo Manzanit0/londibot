@@ -1,32 +1,58 @@
 defmodule Londibot.SubscriptionStore do
-  use Agent
-
   require Logger
 
   alias Londibot.Subscription
+  alias Londibot.Repo
 
   @behaviour Londibot.StoreBehaviour
 
-  def start_link(s = %Subscription{}), do: start_link([s])
-
-  def start_link([]) do
-    Logger.info("Starting SubscriptionStore")
-    Agent.start_link(fn -> [] end, name: __MODULE__)
+  def all do
+    # TODO - lazy pagination optimization
+    Repo.all(Subscription)
   end
 
-  def start_link(subscriptions) do
-    start_link([])
-    unless Enum.empty?(subscriptions), do: Enum.each(subscriptions, &save/1)
+  def fetch(channel_id) when is_binary(channel_id) do
+    Repo.get_by(Subscription, channel_id: channel_id)
+    |> atomize_service()
   end
 
-  def all, do: Agent.get(__MODULE__, & &1)
+  def save(%{channel_id: nil}), do: {:error, "can't save subscription without channel_id"}
 
-  def fetch(id), do: Enum.find(all(), fn subscription -> subscription.channel_id == id end)
+  def save(%{channel_id: channel_id, tfl_lines: lines} = subscription) do
+    case fetch(channel_id) do
+      nil -> insert_subscription(subscription)
+      existing -> update_subscription(existing, %{tfl_lines: lines})
+    end
+  end
 
-  def save(%Subscription{channel_id: nil}), do: {:error, "missing channel_id"}
-  def save(s), do: Agent.update(__MODULE__, &upsert(&1, s))
+  defp insert_subscription(subscription) do
+    subscription
+    |> changeset()
+    |> Repo.insert()
+  end
 
-  defp upsert([], s = %Subscription{}), do: [s]
-  defp upsert([%{channel_id: id} | t], s = %Subscription{channel_id: id}), do: [s | t]
-  defp upsert([h | t], s = %Subscription{}), do: [h | upsert(t, s)]
+  defp update_subscription(subscription, params) do
+    subscription
+    |> changeset(params)
+    |> Repo.update()
+  end
+
+  defp changeset(subscription, params \\ %{}) do
+    subscription
+    |> stringify_service()
+    |> Ecto.Changeset.cast(params, [:channel_id, :service, :tfl_lines])
+    |> Ecto.Changeset.validate_required([:channel_id, :service])
+  end
+
+  defp atomize_service(nil), do: nil
+
+  defp atomize_service(%Subscription{service: s} = subscription) do
+    %Subscription{subscription | service: String.to_atom(s)}
+  end
+
+  defp stringify_service(nil), do: nil
+
+  defp stringify_service(%Subscription{service: s} = subscription) do
+    %Subscription{subscription | service: to_string(s)}
+  end
 end
