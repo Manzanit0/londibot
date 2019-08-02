@@ -20,4 +20,12 @@ defmodule Londibot.Commands.CommandTest do
 
     assert %Command{command: "hey", params: "ho", channel_id: "new-id"} == command
   end
+
+  test "stringifies channel_ids" do
+    command =
+      Command.new("hey", "ho", "let's go!")
+      |> Command.with_channel_id(12345)
+
+    assert %Command{command: "hey", params: "ho", channel_id: "12345"} == command
+  end
 end
