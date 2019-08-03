@@ -57,7 +57,7 @@ defmodule Londibot.TFL do
       iex> Londibot.TFL.routinary?(abnormal_disruption)
       false
 
-      iex> service_down = %Londibot.StatusChange{description: "Victoria line status has changed from Good Service to Service Closed (Victoria Line: Train service will resume later this morning. )"}
+      iex> service_down = %Londibot.StatusChange{description: "Victoria line status has changed from Good Service to Service Closed (Victoria Line: Train service resumes later this morning. )"}
       iex> Londibot.TFL.routinary?(service_down)
       true
   """
@@ -65,7 +65,7 @@ defmodule Londibot.TFL do
     do: true
 
   def routinary?(%StatusChange{description: desc}) when is_binary(desc) do
-    String.contains?(desc, "Train service will resume later this morning")
+    String.contains?(desc, "Train service resumes later this morning")
   end
 
   def routinary?(_), do: false
