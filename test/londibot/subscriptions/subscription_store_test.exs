@@ -54,9 +54,9 @@ defmodule Londibot.SubscriptionStoreTest do
 
     [s1, s2] = SubscriptionStore.all()
 
-    assert s1.service == "slack"
+    assert s1.service == :slack
     assert s1.channel_id == "55"
-    assert s2.service == "telegram"
+    assert s2.service == :telegram
     assert s2.channel_id == "33"
   end
 end
