@@ -9,6 +9,7 @@ defmodule Londibot.SubscriptionStore do
   def all do
     # TODO - lazy pagination optimization
     Repo.all(Subscription)
+    |> Enum.map(&atomize_service/1)
   end
 
   def fetch(channel_id) when is_binary(channel_id) do
