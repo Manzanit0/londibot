@@ -73,7 +73,7 @@ defmodule World do
 
   def setup_notifier(expected_notifications) do
     Application.get_env(:londibot, :notifier)
-    |> expect(:send, expected_notifications, fn x -> x end)
+    |> expect(:send!, expected_notifications, fn x -> x end)
   end
 
   defp setup_subscription_store(subscriptions) do
@@ -93,12 +93,12 @@ defmodule World do
     end
 
     set_statuses_expectations = fn nth_execution ->
-      expect(tfl_service, :status, fn _ ->
+      expect(tfl_service, :status!, fn _ ->
         get_statuses_with_disruptions(@lines, disruptions, nth_execution)
       end)
     end
 
-    expect(tfl_service, :lines, @expected_executions, fn -> @lines end)
+    expect(tfl_service, :lines!, @expected_executions, fn -> @lines end)
     Enum.each(0..@expected_executions, set_statuses_expectations)
     Enum.each(0..@expected_executions, set_disruptions_expectations)
   end

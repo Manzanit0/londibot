@@ -18,7 +18,7 @@ defmodule Londibot.StatusBrokerTest do
     |> World.create()
 
     StatusBroker.start_link([])
-    status = StatusBroker.get_latest()
+    status = StatusBroker.get_latest!()
 
     assert status == [
              {"circle", "Severe Delays", "Description about delays"},
@@ -89,7 +89,7 @@ defmodule Londibot.StatusBrokerTest do
     |> World.create()
 
     StatusBroker.start_link([])
-    diff = StatusBroker.get_changes()
+    diff = StatusBroker.get_changes!()
 
     assert [
              %StatusChange{

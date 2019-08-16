@@ -16,13 +16,13 @@ defmodule Londibot.StatusBroker do
   def start_link do
     Logger.info("Starting StatusBroker")
 
-    status = @tfl_service.lines() |> @tfl_service.status()
+    status = @tfl_service.lines!() |> @tfl_service.status!()
     Agent.start_link(fn -> status end, name: __MODULE__)
   end
 
-  def get_latest do
-    @tfl_service.lines()
-    |> @tfl_service.status()
+  def get_latest! do
+    @tfl_service.lines!()
+    |> @tfl_service.status!()
     |> cache()
   end
 
@@ -30,9 +30,9 @@ defmodule Londibot.StatusBroker do
     Agent.get(__MODULE__, & &1)
   end
 
-  def get_changes do
+  def get_changes! do
     cached = get_cached()
-    latest = get_latest()
+    latest = get_latest!()
 
     for {line2, old_status, _} <- cached,
         {line1, new_status, desc} <- latest,
