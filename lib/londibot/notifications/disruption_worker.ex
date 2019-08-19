@@ -41,10 +41,10 @@ defmodule Londibot.DisruptionWorker do
     {:noreply, state}
   end
 
-  defp send_all_notifications(), do: Enum.each(create_notifications(), &@notifier.send/1)
+  defp send_all_notifications(), do: Enum.each(create_notifications(), &@notifier.send!/1)
 
   def create_notifications() do
-    for %StatusChange{line: changed_line} = change <- StatusBroker.get_changes(),
+    for %StatusChange{line: changed_line} = change <- StatusBroker.get_changes!(),
         subscription <- @subscription_store.all(),
         Subscription.subscribed?(subscription, changed_line) and not TFL.routinary?(change) do
       NotificationFactory.create(subscription, change)

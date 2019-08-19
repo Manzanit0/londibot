@@ -6,7 +6,7 @@ defmodule Londibot.TFL do
   @app_id Application.get_env(:londibot, :tfl_app_id)
   @app_key Application.get_env(:londibot, :tfl_app_key)
 
-  def lines do
+  def lines! do
     "https://api.tfl.gov.uk/Line/Mode/tube%2Cdlr%2Coverground%2Ctflrail"
     |> add_auth_params()
     |> HTTPoison.get!(recv_timeout: 50000)
@@ -15,13 +15,13 @@ defmodule Londibot.TFL do
     |> Enum.map(fn x -> x["id"] end)
   end
 
-  def status(lines) when is_list(lines) do
+  def status!(lines) when is_list(lines) do
     lines
     |> Enum.join("%2C")
-    |> status
+    |> status!
   end
 
-  def status(lines) when is_binary(lines) do
+  def status!(lines) when is_binary(lines) do
     "https://api.tfl.gov.uk/Line/#{lines}/Status"
     |> add_auth_params()
     |> HTTPoison.get!(recv_timeout: 50000)

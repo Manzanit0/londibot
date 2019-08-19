@@ -104,10 +104,10 @@ defmodule WorldTest do
     |> World.create()
 
     tfl_service = Application.get_env(:londibot, :tfl_service)
-    lines = tfl_service.lines()
+    lines = tfl_service.lines!()
     assert length(lines) == 15
 
-    statuses = tfl_service.status(lines)
+    statuses = tfl_service.status!(lines)
 
     assert Enum.member?(statuses, {"victoria", "Minor delays", "because..."})
     assert Enum.member?(statuses, {"circle", "Line closed", "boom!"})
@@ -147,8 +147,8 @@ defmodule WorldTest do
            ]
 
     tfl_service = Application.get_env(:londibot, :tfl_service)
-    lines = tfl_service.lines()
-    statuses = tfl_service.status(lines)
+    lines = tfl_service.lines!()
+    statuses = tfl_service.status!(lines)
     disruptions = tfl_service.disruptions(statuses)
 
     assert disruptions == [
@@ -236,7 +236,7 @@ defmodule WorldTest do
              {"victoria", "Good Service", ""},
              {"tfl rail", "Good Service", ""},
              {"tram", "Good Service", ""}
-           ] == service.status(nil)
+           ] == service.status!(nil)
 
     assert [
              {"circle", "Severe Delays", "oops"},
@@ -254,7 +254,7 @@ defmodule WorldTest do
              {"victoria", "Good Service", ""},
              {"tfl rail", "Good Service", ""},
              {"tram", "Good Service", ""}
-           ] == service.status(nil)
+           ] == service.status!(nil)
 
     assert [
              {"circle", "Good Service", ""},
@@ -272,7 +272,7 @@ defmodule WorldTest do
              {"victoria", "Good Service", ""},
              {"tfl rail", "Good Service", ""},
              {"tram", "Good Service", ""}
-           ] == service.status(nil)
+           ] == service.status!(nil)
 
     assert [
              {"circle", "Good Service", ""},
@@ -290,7 +290,7 @@ defmodule WorldTest do
              {"victoria", "Good Service", ""},
              {"tfl rail", "Good Service", ""},
              {"tram", "Good Service", ""}
-           ] == service.status(nil)
+           ] == service.status!(nil)
 
     assert [
              {"circle", "Good Service", ""},
@@ -308,6 +308,6 @@ defmodule WorldTest do
              {"victoria", "Shut down", "oops"},
              {"tfl rail", "Good Service", ""},
              {"tram", "Good Service", ""}
-           ] == service.status(nil)
+           ] == service.status!(nil)
   end
 end

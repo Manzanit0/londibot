@@ -5,12 +5,12 @@ defmodule Londibot.TFLTest do
 
   @tag :callout
   test "lists all the lines of tube, dlr, overground and tfl-rail" do
-    assert length(TFL.lines()) == 14
+    assert length(TFL.lines!()) == 14
   end
 
   @tag :callout
   test "fetches the status of a single line" do
-    [{name, status, description}] = TFL.status("victoria")
+    [{name, status, description}] = TFL.status!("victoria")
 
     assert name == "Victoria"
     assert String.length(status) != 0
@@ -19,7 +19,7 @@ defmodule Londibot.TFLTest do
 
   @tag :callout
   test "fetches the status of multiple lines" do
-    [{name, status, _}, {name2, status2, _}] = TFL.status(["victoria", "circle"])
+    [{name, status, _}, {name2, status2, _}] = TFL.status!(["victoria", "circle"])
 
     assert name == "Circle"
     assert name2 == "Victoria"

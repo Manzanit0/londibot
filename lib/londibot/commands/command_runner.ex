@@ -7,8 +7,8 @@ defmodule Londibot.Commands.CommandRunner do
 
   def execute(%Command{command: :status}) do
     message =
-      @tfl_service.lines()
-      |> @tfl_service.status()
+      @tfl_service.lines!()
+      |> @tfl_service.status!()
       |> to_status_message()
 
     {:ok, message}
@@ -16,8 +16,8 @@ defmodule Londibot.Commands.CommandRunner do
 
   def execute(%Command{command: :disruptions}) do
     message =
-      @tfl_service.lines()
-      |> @tfl_service.status()
+      @tfl_service.lines!()
+      |> @tfl_service.status!()
       |> @tfl_service.disruptions()
       |> to_disruption_message()
 

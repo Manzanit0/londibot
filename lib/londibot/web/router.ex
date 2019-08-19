@@ -20,12 +20,12 @@ defmodule Londibot.Web.Router do
   get("/", do: send_resp(conn, 200, "Service up and running!!"))
 
   post "/slack" do
-    msg = SlackHandler.handle(conn)
+    msg = SlackHandler.handle!(conn)
     send_resp(conn, 200, msg)
   end
 
   post "/telegram" do
-    msg = TelegramHandler.handle(conn)
+    msg = TelegramHandler.handle!(conn)
     send_resp(conn, 200, msg)
   end
 

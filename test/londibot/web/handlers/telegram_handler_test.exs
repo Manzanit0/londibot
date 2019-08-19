@@ -9,7 +9,7 @@ defmodule Londibot.Web.Handlers.TelegramHandlerTest do
     |> World.create()
 
     response =
-      TelegramHandler.handle(%{"message" => %{"from" => %{"id" => "123"}, "text" => "/status"}})
+      TelegramHandler.handle!(%{"message" => %{"from" => %{"id" => "123"}, "text" => "/status"}})
 
     assert response == """
            {\"text\":\"\
@@ -42,7 +42,7 @@ defmodule Londibot.Web.Handlers.TelegramHandlerTest do
     |> World.create()
 
     response =
-      TelegramHandler.handle(%{
+      TelegramHandler.handle!(%{
         "message" => %{"from" => %{"id" => "123"}, "text" => "/disruptions"}
       })
 
@@ -56,7 +56,9 @@ defmodule Londibot.Web.Handlers.TelegramHandlerTest do
 
   test "an error response is sent if the command doesn't exist" do
     response =
-      TelegramHandler.handle(%{"message" => %{"from" => %{"id" => "123"}, "text" => "break pls!"}})
+      TelegramHandler.handle!(%{
+        "message" => %{"from" => %{"id" => "123"}, "text" => "break pls!"}
+      })
 
     assert response == """
            {\"text\":\"The command you just tried doesn't exist!\",\
@@ -67,6 +69,6 @@ defmodule Londibot.Web.Handlers.TelegramHandlerTest do
   end
 
   test "Upon unknown body params, ignore the message" do
-    assert "" == TelegramHandler.handle(%{"channel_id" => "123", "text" => "break pls!"})
+    assert "" == TelegramHandler.handle!(%{"channel_id" => "123", "text" => "break pls!"})
   end
 end

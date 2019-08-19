@@ -1,3 +1,3 @@
 defprotocol Londibot.Notifier do
-  def send(notification)
+  def send!(notification)
 end
