@@ -13,4 +13,4 @@ before_script:
 - psql -c 'create database londibot_repo;' -U postgres
 
 script:
-- MIX_ENV=test mix coveralls.travis
+- MIX_ENV=test mix coveralls.travis --exclude callout
