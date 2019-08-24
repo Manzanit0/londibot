@@ -5,7 +5,9 @@
 
 Bot which reports the status of London TFL services.
 
-Available in Telegram: [link](https://t.me/LondiBot)
+<a href="https://t.me/LondiBot"><img src="https://www.umrohterbaik.com/wp-content/uploads/2018/07/telegram-button-1.png" width="130" height="40"></a>
+
+[![Slack button](https://platform.slack-edge.com/img/add_to_slack.png)](https://slack.com/oauth/authorize?scope=incoming-webhook,commands,bot&client_id=2225972970.533137885794)
 
 ## What is Londibot?
 
