@@ -1,18 +1,11 @@
 defmodule Londibot.DisruptionWorker do
   use GenServer
 
+  alias Londibot.DisruptionActions
+
   require Logger
 
-  alias Londibot.TFL
-  alias Londibot.Subscription
-  alias Londibot.StatusChange
-  alias Londibot.StatusBroker
-  alias Londibot.NotificationFactory
-
   @default_minutes 3
-
-  @subscription_store Application.get_env(:londibot, :subscription_store)
-  @notifier Application.get_env(:londibot, :notifier)
 
   def start_link(args \\ []) do
     Logger.info("Starting DisruptionWorker")
@@ -32,23 +25,13 @@ defmodule Londibot.DisruptionWorker do
   end
 
   def handle_info(:work, %{minutes: minutes, forever: forever} = state) do
-    send_all_notifications()
+    DisruptionActions.send_all_notifications()
 
     if forever do
       schedule_work(minutes)
     end
 
     {:noreply, state}
-  end
-
-  defp send_all_notifications(), do: Enum.each(create_notifications(), &@notifier.send!/1)
-
-  def create_notifications() do
-    for %StatusChange{line: changed_line} = change <- StatusBroker.get_changes!(),
-        subscription <- @subscription_store.all(),
-        Subscription.subscribed?(subscription, changed_line) and not TFL.routinary?(change) do
-      NotificationFactory.create(subscription, change)
-    end
   end
 
   defp schedule_work(minutes) do
