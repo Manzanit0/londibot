@@ -8,6 +8,7 @@ defmodule Londibot.StatusBroker do
   require Logger
 
   alias Londibot.StatusChange
+  alias Londibot.TFL
 
   @tfl_service Application.get_env(:londibot, :tfl_service)
 
@@ -28,6 +29,10 @@ defmodule Londibot.StatusBroker do
 
   def get_cached do
     Agent.get(__MODULE__, & &1)
+  end
+
+  def get_non_routinary_changes! do
+    Enum.filter(get_changes!(), fn change -> not TFL.routinary?(change) end)
   end
 
   def get_changes! do
