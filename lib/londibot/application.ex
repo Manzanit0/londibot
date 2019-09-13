@@ -12,7 +12,7 @@ defmodule Londibot.Application do
       Londibot.Repo,
       {Plug.Cowboy, scheme: :http, plug: Londibot.Web.Router, options: [port: port]},
       {Londibot.StatusBroker, []},
-      {Londibot.DisruptionWorker, [forever: true]}
+      {Londibot.DisruptionWorker, Londibot.DisruptionWorker.default_params()}
     ]
 
     Logger.info("Started londibot on port #{port}")
