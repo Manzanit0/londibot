@@ -106,4 +106,41 @@ defmodule Londibot.StatusBrokerTest do
              }
            ] == diff
   end
+
+  test "fetches non-routinary changes – nightly shutdown and morning start" do
+    World.new()
+    |> World.with_disruption(
+      line: "circle",
+      status: "Service Closed",
+      description: "Train service resumes later this morning",
+      starts_after: 0,
+      lasts_for: 1
+    )
+    |> World.with_disruption(
+      line: "circle",
+      status: "Severe Delays",
+      description: "",
+      starts_after: 3,
+      lasts_for: 1
+    )
+    |> World.create()
+
+    StatusBroker.start_link([])
+
+    # Good Service -> Service Closed (nightly)
+    assert [] == StatusBroker.get_non_routinary_changes!()
+
+    # Service Closed -> Good Service (daily)
+    assert [] == StatusBroker.get_non_routinary_changes!()
+
+    # Good Service -> Severe Delays (non-routinary change)
+    assert [
+             %StatusChange{
+               description: "",
+               line: "circle",
+               new_status: "Severe Delays",
+               previous_status: "Good Service"
+             }
+           ] == StatusBroker.get_non_routinary_changes!()
+  end
 end
