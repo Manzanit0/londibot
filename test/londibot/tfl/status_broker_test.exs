@@ -93,13 +93,13 @@ defmodule Londibot.StatusBrokerTest do
 
     assert [
              %StatusChange{
-               line: "circle",
+               tfl_line: "circle",
                previous_status: "Severe Delays",
                new_status: "Good Service",
                description: ""
              },
              %StatusChange{
-               line: "northen",
+               tfl_line: "northen",
                previous_status: "Good Service",
                new_status: "Everything is broken",
                description: "oops"
@@ -137,7 +137,7 @@ defmodule Londibot.StatusBrokerTest do
     assert [
              %StatusChange{
                description: "",
-               line: "circle",
+               tfl_line: "circle",
                new_status: "Severe Delays",
                previous_status: "Good Service"
              }

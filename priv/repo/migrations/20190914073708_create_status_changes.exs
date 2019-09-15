@@ -3,7 +3,7 @@ defmodule Londibot.Repo.Migrations.CreateStatusChanges do
 
   def change do
     create table(:status_changes) do
-      add :line, :string
+      add :tfl_line, :string
       add :previous_status, :string
       add :new_status, :string
       add :description, :string
