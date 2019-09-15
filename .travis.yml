@@ -1,7 +1,7 @@
 language: elixir
 
-elixir:
-- 1.8.0
+elixir: 1.8.2
+otp_release: 21.3.7
 
 dist: xenial
 
@@ -14,3 +14,11 @@ before_script:
 
 script:
 - MIX_ENV=test mix coveralls.travis --exclude callout
+
+deploy:
+  - provider: script
+    script:
+      - git remote add gigalixir https://$GIGALIXIR_EMAIL:$GIGALIXIR_API_KEY@git.gigalixir.com/$GIGALIXIR_APP_NAME.git
+      - mix test && git push -f gigalixir HEAD:refs/heads/master
+    on:
+      branch: master
