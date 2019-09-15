@@ -5,7 +5,8 @@ config :londibot, Londibot.Repo,
   url: System.get_env("DATABASE_URL"),
   database: "",
   ssl: true,
-  pool_size: 2
+  # Due to Gigalixir free tier constraints
+  pool_size: 1
 
 config :londibot, :slack_token, System.get_env("LONDIBOT_SLACK")
 config :londibot, :telegram_token, System.get_env("LONDIBOT_TELEGRAM")
