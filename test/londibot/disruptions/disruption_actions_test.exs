@@ -19,13 +19,13 @@ defmodule Londibot.DisruptionActionsTest do
 
       status_changes = [
         %StatusChange{
-          line: "victoria",
+          tfl_line: "victoria",
           previous_status: "Good Service",
           new_status: "Severe Delays",
           description: ""
         },
         %StatusChange{
-          line: "victoria",
+          tfl_line: "victoria",
           previous_status: "Severe Delays",
           new_status: "Good Service",
           description: ""
@@ -42,7 +42,7 @@ defmodule Londibot.DisruptionActionsTest do
     test "saves status changes to database, including timestamps" do
       status_changes = [
         %StatusChange{
-          line: "Victoria",
+          tfl_line: "Victoria",
           previous_status: "Good Service",
           new_status: "Severe Delays",
           description: "Because reasons"
@@ -53,7 +53,7 @@ defmodule Londibot.DisruptionActionsTest do
 
       [status_change | []] = Repo.all(StatusChange)
 
-      assert "Victoria" == status_change.line
+      assert "Victoria" == status_change.tfl_line
       assert "Good Service" == status_change.previous_status
       assert "Severe Delays" == status_change.new_status
       assert "Because reasons" == status_change.description

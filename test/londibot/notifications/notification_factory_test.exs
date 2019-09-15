@@ -25,7 +25,7 @@ defmodule Londibot.NotificationFactoryTest do
     s = %Subscription{service: :slack, channel_id: "123"}
 
     c = %StatusChange{
-      line: "victoria",
+      tfl_line: "victoria",
       previous_status: "Good Service",
       new_status: "Severe Delays",
       description: "Due to passenger not minding the gap"
@@ -44,7 +44,7 @@ defmodule Londibot.NotificationFactoryTest do
     s = %Subscription{service: :telegram, channel_id: "123"}
 
     c = %StatusChange{
-      line: "victoria",
+      tfl_line: "victoria",
       previous_status: "Severe Delays",
       new_status: "Good Service"
     }
@@ -61,7 +61,7 @@ defmodule Londibot.NotificationFactoryTest do
     s = %Subscription{service: :telegram, channel_id: "123"}
 
     c = %StatusChange{
-      line: "victoria",
+      tfl_line: "victoria",
       previous_status: "Severe Delays",
       new_status: "Closed"
     }

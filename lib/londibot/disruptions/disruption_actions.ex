@@ -17,13 +17,13 @@ defmodule Londibot.DisruptionActions do
   defp to_changeset(status_change, params \\ %{}) do
     status_change
     |> Changeset.cast(params, [
-      :line,
+      :tfl_line,
       :previous_status,
       :new_status,
       :description
     ])
     |> Changeset.validate_required([
-      :line,
+      :tfl_line,
       :previous_status,
       :new_status,
       :description
@@ -38,7 +38,7 @@ defmodule Londibot.DisruptionActions do
   end
 
   defp collect_subscriptions(status_changes) do
-    for %StatusChange{line: changed_line} = change <- status_changes,
+    for %StatusChange{tfl_line: changed_line} = change <- status_changes,
         subscription <- @subscription_store.all(),
         Subscription.subscribed?(subscription, changed_line) do
       {subscription, change}

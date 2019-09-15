@@ -40,7 +40,7 @@ defmodule Londibot.StatusBroker do
         line1 == line2 and old_status != new_status,
         into: [] do
       %StatusChange{
-        line: line1,
+        tfl_line: line1,
         previous_status: old_status,
         new_status: new_status,
         description: desc
