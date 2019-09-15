@@ -17,22 +17,22 @@ defmodule Londibot.DisruptionActionsTest do
       |> World.with_notifications(4)
       |> World.create()
 
-      status_changes = [
-        %StatusChange{
-          tfl_line: "victoria",
-          previous_status: "Good Service",
-          new_status: "Severe Delays",
-          description: ""
-        },
-        %StatusChange{
-          tfl_line: "victoria",
-          previous_status: "Severe Delays",
-          new_status: "Good Service",
-          description: ""
-        }
-      ]
+      status_1 =
+        StatusChange.new()
+        |> StatusChange.with_line("Victoria")
+        |> StatusChange.with_previous_status("Good Service")
+        |> StatusChange.with_new_status("Severe Delays")
+        |> StatusChange.with_description("Signal malfunction")
 
-      :ok = DisruptionActions.send_all_notifications(status_changes)
+      status_2 =
+        StatusChange.new()
+        |> StatusChange.with_line("Victoria")
+        |> StatusChange.with_previous_status("Severe Delays")
+        |> StatusChange.with_new_status("Good Service")
+        |> StatusChange.with_description("")
+
+      [status_1, status_2]
+      |> DisruptionActions.send_all_notifications()
 
       Mox.verify!(Londibot.NotifierMock)
     end
@@ -40,16 +40,13 @@ defmodule Londibot.DisruptionActionsTest do
 
   describe "insert_status_changes/1" do
     test "saves status changes to database, including timestamps" do
-      status_changes = [
-        %StatusChange{
-          tfl_line: "Victoria",
-          previous_status: "Good Service",
-          new_status: "Severe Delays",
-          description: "Because reasons"
-        }
-      ]
-
-      DisruptionActions.insert_status_changes(status_changes)
+      StatusChange.new()
+      |> StatusChange.with_line("Victoria")
+      |> StatusChange.with_previous_status("Good Service")
+      |> StatusChange.with_new_status("Severe Delays")
+      |> StatusChange.with_description("Because reasons")
+      |> List.wrap()
+      |> DisruptionActions.insert_status_changes()
 
       [status_change | []] = Repo.all(StatusChange)
 

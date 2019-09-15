@@ -39,12 +39,11 @@ defmodule Londibot.StatusBroker do
         {line1, new_status, desc} <- latest,
         line1 == line2 and old_status != new_status,
         into: [] do
-      %StatusChange{
-        tfl_line: line1,
-        previous_status: old_status,
-        new_status: new_status,
-        description: desc
-      }
+      StatusChange.new()
+      |> StatusChange.with_line(line1)
+      |> StatusChange.with_previous_status(old_status)
+      |> StatusChange.with_new_status(new_status)
+      |> StatusChange.with_description(desc)
     end
   end
 

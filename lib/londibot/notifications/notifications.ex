@@ -27,7 +27,11 @@ defmodule Londibot.NotificationFactory do
     create(s, msg)
   end
 
-  defp message(%StatusChange{previous_status: previous, new_status: "Good Service", tfl_line: line}) do
+  defp message(%StatusChange{
+         previous_status: previous,
+         new_status: "Good Service",
+         tfl_line: line
+       }) do
     "✅ #{line} line status has changed from #{previous} to Good Service"
   end
 
