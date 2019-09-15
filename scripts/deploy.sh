@@ -11,4 +11,5 @@ gigalixir git:remote $GIGALIXIR_APP_NAME
 git push -f gigalixir HEAD:refs/heads/master
 
 # run migrations
-gigalixir run mix ecto.migrate
+# NB: disable automatic run of migrations due to Gigalixir free tier constraints
+# gigalixir run mix ecto.migrate
