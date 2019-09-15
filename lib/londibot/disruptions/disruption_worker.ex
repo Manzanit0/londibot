@@ -13,7 +13,8 @@ defmodule Londibot.DisruptionWorker do
       forever: true,
       minutes: @default_minutes,
       actions: [
-        &DisruptionActions.send_all_notifications/1
+        &DisruptionActions.send_all_notifications/1,
+        &DisruptionActions.insert_status_changes/1
       ]
     ]
   end

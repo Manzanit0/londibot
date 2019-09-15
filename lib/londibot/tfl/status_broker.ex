@@ -1,7 +1,3 @@
-defmodule Londibot.StatusChange do
-  defstruct [:line, :previous_status, :new_status, :description]
-end
-
 defmodule Londibot.StatusBroker do
   use Agent
 
