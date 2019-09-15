@@ -1,5 +1,5 @@
 defmodule Londibot.NotificationFactoryTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   alias Londibot.NotificationFactory
   alias Londibot.Subscription

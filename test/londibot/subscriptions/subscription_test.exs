@@ -1,5 +1,5 @@
 defmodule Londibot.SubscriptionTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   alias Londibot.Subscription
 

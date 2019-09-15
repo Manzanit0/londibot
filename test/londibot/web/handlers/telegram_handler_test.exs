@@ -1,5 +1,5 @@
 defmodule Londibot.Web.Handlers.TelegramHandlerTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   alias Londibot.Web.Handlers.TelegramHandler
 

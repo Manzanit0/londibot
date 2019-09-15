@@ -1,5 +1,5 @@
 defmodule Londibot.Web.Handlers.SlackHandlerTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   alias Londibot.Web.Handlers.SlackHandler
 

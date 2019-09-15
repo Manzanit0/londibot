@@ -1,5 +1,5 @@
 defmodule Londibot.Commands.CommandTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   alias Londibot.Commands.Command
 

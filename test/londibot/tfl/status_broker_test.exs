@@ -1,5 +1,5 @@
 defmodule Londibot.StatusBrokerTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
 
   import Mox
 
