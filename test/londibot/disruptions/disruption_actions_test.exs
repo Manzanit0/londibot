@@ -1,8 +1,13 @@
 defmodule Londibot.DisruptionActionsTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
+  alias Londibot.Repo
   alias Londibot.StatusChange
   alias Londibot.DisruptionActions
+
+  setup do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Londibot.Repo)
+  end
 
   describe "send_all_notifications/1" do
     test "send a notification per status change per subscription" do
@@ -30,6 +35,32 @@ defmodule Londibot.DisruptionActionsTest do
       :ok = DisruptionActions.send_all_notifications(status_changes)
 
       Mox.verify!(Londibot.NotifierMock)
+    end
+  end
+
+  describe "insert_status_changes/1" do
+    test "saves status changes to database, including timestamps" do
+      status_changes = [
+        %StatusChange{
+          line: "Victoria",
+          previous_status: "Good Service",
+          new_status: "Severe Delays",
+          description: "Because reasons"
+        }
+      ]
+
+      DisruptionActions.insert_status_changes(status_changes)
+
+      [status_change | []] = Repo.all(StatusChange)
+
+      assert "Victoria" == status_change.line
+      assert "Good Service" == status_change.previous_status
+      assert "Severe Delays" == status_change.new_status
+      assert "Because reasons" == status_change.description
+      assert nil != status_change.inserted_at
+      assert "Etc/UTC" == status_change.inserted_at.time_zone
+      assert nil != status_change.updated_at
+      assert "Etc/UTC" == status_change.updated_at.time_zone
     end
   end
 end
