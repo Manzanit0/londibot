@@ -9,7 +9,7 @@ defmodule Londibot.TFL do
   def lines! do
     "https://api.tfl.gov.uk/Line/Mode/tube%2Cdlr%2Coverground%2Ctflrail"
     |> add_auth_params()
-    |> HTTPoison.get!(recv_timeout: 50000)
+    |> http_get!()
     |> Map.get(:body)
     |> Poison.decode!()
     |> Enum.map(fn x -> x["id"] end)
@@ -24,7 +24,7 @@ defmodule Londibot.TFL do
   def status!(lines) when is_binary(lines) do
     "https://api.tfl.gov.uk/Line/#{lines}/Status"
     |> add_auth_params()
-    |> HTTPoison.get!(recv_timeout: 50000)
+    |> http_get!()
     |> Map.get(:body)
     |> Poison.decode!()
     |> Enum.map(fn x -> parse_line(x) end)
@@ -78,4 +78,6 @@ defmodule Londibot.TFL do
   defp add_auth_params(url) do
     url <> "?app_id=#{@app_id}&app_key=#{@app_key}"
   end
+
+  defp http_get!(request), do: HTTPoison.get!(request, timeout: 50_000, recv_timeout: 50_000)
 end
