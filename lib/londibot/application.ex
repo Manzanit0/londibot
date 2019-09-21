@@ -6,18 +6,23 @@ defmodule Londibot.Application do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    port = String.to_integer(System.get_env("PORT") || "4000")
-
     children = [
       Londibot.Repo,
-      {Plug.Cowboy, scheme: :http, plug: Londibot.Web.Router, options: [port: port]},
       {Londibot.StatusBroker, []},
-      {Londibot.DisruptionWorker, Londibot.DisruptionWorker.default_params()}
+      {Londibot.DisruptionWorker, Londibot.DisruptionWorker.default_params()},
+      LondibotWeb.Endpoint
     ]
 
-    Logger.info("Started londibot on port #{port}")
+    Logger.info("Started Londibot application")
 
     opts = [strategy: :one_for_one, name: Londibot.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  # Tell Phoenix to update the endpoint configuration
+  # whenever the application is updated.
+  def config_change(changed, _new, removed) do
+    LondibotWeb.Endpoint.config_change(changed, removed)
+    :ok
   end
 end
