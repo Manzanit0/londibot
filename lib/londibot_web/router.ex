@@ -11,6 +11,8 @@ defmodule LondibotWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug(Plug.Logger, log: :debug)
+    plug(Londibot.Web.DefaultHeadersPlug)
   end
 
   scope "/", LondibotWeb do
@@ -19,8 +21,11 @@ defmodule LondibotWeb.Router do
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", LondibotWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", LondibotWeb do
+    pipe_through :api
+
+    # get("/", do: send_resp(conn, 200, "Service up and running!!"))
+    post "/telegram", TelegramController, :post
+    post "/slack", SlackController, :post
+  end
 end
