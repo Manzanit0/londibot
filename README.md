@@ -54,23 +54,17 @@ Slack installations will have many bots and having too many slash commands ends 
 - `/londibot subscribe circle, london overground` will subscribe to the given lines
 - `/londibot unsubscribe victoria, northern` will unsubscribe to the given lines
 
-## Getting started – WIP!!
+## Getting started
 
-To start your Phoenix server:
+To start the server:
 
   * Install dependencies with `mix deps.get`
   * Create and migrate your database with `mix ecto.setup`
   * Install Node.js dependencies with `cd assets && npm install`
-  * Start Phoenix endpoint with `mix phx.server`
+  * Start the server with `mix phx.server`
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Simply clone the repository and run:
-
-```
-mix deps
-mix run --no-halt
-```
+Now you can visit [`localhost:4000`](http://localhost:4000) from your browser or
+run some sample requests like in [sample_requests.http](./sample_requests.http).
 
 To run the tests, run: `mix test`.
 
