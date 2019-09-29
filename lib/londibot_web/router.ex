@@ -12,7 +12,7 @@ defmodule LondibotWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug(Plug.Logger, log: :debug)
-    plug(Londibot.Web.DefaultHeadersPlug)
+    plug(LondibotWeb.DefaultHeadersPlug)
   end
 
   scope "/", LondibotWeb do

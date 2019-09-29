@@ -1,7 +1,7 @@
-defmodule Londibot.Web.CommandParserTest do
+defmodule LondibotWeb.CommandParserTest do
   use ExUnit.Case, async: true
 
-  alias Londibot.Web.CommandParser
+  alias LondibotWeb.CommandParser
   alias Londibot.Commands.Command
 
   test "parses command without params" do

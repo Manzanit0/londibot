@@ -1,4 +1,4 @@
-defmodule Londibot.Web.CommandParser do
+defmodule LondibotWeb.CommandParser do
   alias Londibot.Commands.Command
 
   def parse(text) do

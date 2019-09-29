@@ -2,7 +2,7 @@ defmodule Londibot.Web.DefaultHeadersPlugTest do
   use ExUnit.Case, async: true
   use Plug.Test
 
-  alias Londibot.Web.DefaultHeadersPlug
+  alias LondibotWeb.DefaultHeadersPlug
 
   test "adds application/json header to conn" do
     header =
