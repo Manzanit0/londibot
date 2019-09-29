@@ -5,21 +5,18 @@ defmodule LondibotWeb.TelegramControllerTest do
     World.new()
     |> World.create()
 
-    # body = %{"message" => %{"from" => %{"id" => "123"}, "text" => "/subscribe victoria"}}
+    body = %{"message" => %{"from" => %{"id" => "123"}, "text" => "/subscribe victoria"}}
 
     response =
       conn
-      |> post("/api/telegram")
+      |> post("/api/telegram", body)
       |> json_response(200)
 
-    expected =
-      {200,
-       [
-         {"cache-control", "max-age=0, private, must-revalidate"},
-         {"content-type", "application/json; charset=utf-8"}
-       ],
-       "{\"text\":\"Subscription saved!\",\"parse_mode\":\"markdown\",\"method\":\"sendMessage\",\"chat_id\":\"123\"}"}
-
-    assert expected == response
+    assert response == %{
+             "chat_id" => "123",
+             "method" => "sendMessage",
+             "parse_mode" => "markdown",
+             "text" => "Subscription saved!"
+           }
   end
 end
