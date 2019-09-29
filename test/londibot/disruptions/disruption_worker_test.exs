@@ -4,7 +4,6 @@ defmodule Londibot.DisruptionWorkerTest do
   import Mox
 
   alias Londibot.DisruptionWorker
-  alias Londibot.StatusBroker
   alias Londibot.DisruptionWorkerTest.ActionMock, as: ActionMock
 
   setup :set_mox_global
@@ -13,7 +12,6 @@ defmodule Londibot.DisruptionWorkerTest do
     test "The configured actions get executed every time handle_info is invoked" do
       World.new() |> World.create()
 
-      StatusBroker.start_link()
       ActionMock.start_link()
 
       actions = [&ActionMock.increment/1]
@@ -28,7 +26,6 @@ defmodule Londibot.DisruptionWorkerTest do
     test "actions passed through start_link are run upon handle_info" do
       World.new() |> World.create()
 
-      StatusBroker.start_link()
       ActionMock.start_link()
 
       actions = [&ActionMock.increment/1]

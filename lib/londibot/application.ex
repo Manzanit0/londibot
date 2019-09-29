@@ -7,11 +7,9 @@ defmodule Londibot.Application do
   @tfl_service Application.get_env(:londibot, :tfl_service)
 
   def start(_type, _args) do
-    import Supervisor.Spec, warn: false
-
     children = [
       Londibot.Repo,
-      {Londibot.StatusBroker, status(@env)},
+      {Londibot.StatusBroker, []},
       {Londibot.DisruptionWorker, Londibot.DisruptionWorker.default_params()},
       LondibotWeb.Endpoint
     ]
@@ -19,7 +17,11 @@ defmodule Londibot.Application do
     Logger.info("Started Londibot application")
 
     opts = [strategy: :one_for_one, name: Londibot.Supervisor]
-    Supervisor.start_link(children, opts)
+    ret_val = Supervisor.start_link(children, opts)
+
+    load_status_worker(@env)
+
+    ret_val
   end
 
   # Tell Phoenix to update the endpoint configuration
@@ -33,6 +35,11 @@ defmodule Londibot.Application do
   # up, so it is a much simpler a approach to simply startup the worker with an
   # empty status and cache it once @tfl_service is set up in each test.
   # Another approach? -> https://elixirforum.com/t/designing-an-agent-with-side-effects-on-start-link/25576
-  defp status(:test), do: []
-  defp status(_), do: @tfl_service.lines! |> @tfl_service.status!
+  defp load_status_worker(:test), do: nil
+
+  defp load_status_worker(_),
+    do:
+      Agent.cast(Londibot.StatusBroker, fn _ ->
+        @tfl_service.lines!() |> @tfl_service.status!()
+      end)
 end
