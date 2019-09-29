@@ -5,7 +5,7 @@ defmodule LondibotWeb.TelegramControllerTest do
     World.new()
     |> World.create()
 
-    body = %{"message" => %{"from" => %{"id" => "123"}, "text" => "/subscribe victoria"}}
+    # body = %{"message" => %{"from" => %{"id" => "123"}, "text" => "/subscribe victoria"}}
 
     response =
       conn

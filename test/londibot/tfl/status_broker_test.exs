@@ -17,7 +17,6 @@ defmodule Londibot.StatusBrokerTest do
     )
     |> World.create()
 
-    StatusBroker.start_link([])
     status = StatusBroker.get_latest!()
 
     assert status == [
@@ -48,7 +47,9 @@ defmodule Londibot.StatusBrokerTest do
     )
     |> World.create()
 
-    StatusBroker.start_link([])
+    # Cache initial status
+    StatusBroker.get_changes!()
+
     status = StatusBroker.get_cached()
 
     assert status == [
@@ -88,7 +89,9 @@ defmodule Londibot.StatusBrokerTest do
     )
     |> World.create()
 
-    StatusBroker.start_link([])
+    # Cache initial status
+    StatusBroker.get_changes!()
+
     diff = StatusBroker.get_changes!()
 
     assert [
@@ -125,7 +128,8 @@ defmodule Londibot.StatusBrokerTest do
     )
     |> World.create()
 
-    StatusBroker.start_link([])
+    # Cache initial status
+    StatusBroker.get_changes!()
 
     # Good Service -> Service Closed (nightly)
     assert [] == StatusBroker.get_non_routinary_changes!()

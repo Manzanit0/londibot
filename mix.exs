@@ -49,7 +49,7 @@ defmodule Londibot.MixProject do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test --no-start"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

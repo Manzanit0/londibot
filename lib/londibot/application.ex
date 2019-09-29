@@ -3,12 +3,15 @@ defmodule Londibot.Application do
 
   require Logger
 
+  @env Application.get_env(:londibot, :environment)
+  @tfl_service Application.get_env(:londibot, :tfl_service)
+
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
     children = [
       Londibot.Repo,
-      {Londibot.StatusBroker, []},
+      {Londibot.StatusBroker, status(@env)},
       {Londibot.DisruptionWorker, Londibot.DisruptionWorker.default_params()},
       LondibotWeb.Endpoint
     ]
@@ -25,4 +28,11 @@ defmodule Londibot.Application do
     LondibotWeb.Endpoint.config_change(changed, removed)
     :ok
   end
+
+  # NB: When running tests, the application starts up before the mocks are set
+  # up, so it is a much simpler a approach to simply startup the worker with an
+  # empty status and cache it once @tfl_service is set up in each test.
+  # Another approach? -> https://elixirforum.com/t/designing-an-agent-with-side-effects-on-start-link/25576
+  defp status(:test), do: []
+  defp status(_), do: @tfl_service.lines! |> @tfl_service.status!
 end

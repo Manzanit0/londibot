@@ -2,6 +2,8 @@ use Mix.Config
 
 config :londibot, ecto_repos: [Londibot.Repo]
 
+config :londibot, environment: Mix.env()
+
 # Environment variables
 config :londibot, :slack_token, System.get_env("LONDIBOT_SLACK")
 config :londibot, :telegram_token, System.get_env("LONDIBOT_TELEGRAM")
