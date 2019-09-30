@@ -9,7 +9,7 @@ defmodule LondibotWeb.DashboardView do
       where: c.new_status != "Good Service" and c.new_status != "Service Closed",
       select: {c.tfl_line, count(c.id)},
       group_by: c.tfl_line,
-      order_by: count(c.id)
+      order_by: [desc: count(c.id)]
 
     Londibot.Repo.all(query)
   end
