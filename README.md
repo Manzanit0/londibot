@@ -9,26 +9,26 @@ Available in Telegram: [link](https://t.me/LondiBot)
 
 ## What is Londibot?
 
-Londibot started as a wrapper around the TFL API so would get aquainted with Clojure when I first arrived to London
-(Autumn 2018), but as I spent more time in the city, I realized that the public transport services were slightly
+Londibot started as a wrapper around the TFL API so I could get aquainted with Clojure when I first arrived to London
+(Autumn 2018). As I spent more time in the city, I realized that the public transport services were slightly
 underwhelming – it's not unusual for any underground line to suffer delays a couple of times a day. That's when I
 decided that the TFL API wrapper could actually be so much more and help me with that struggle.
 
-Currently, Londibot is a Telegram/Slack bot which allows users to subscribe to any underground/overground line so it
-notifies them upon any service change, be it a disruption or a recovery. It supports a wide variety of commands, all
-the way from `/status` to `/subscribe Victoria, Metropolitan`.
+Currently, **Londibot is a Telegram/Slack bot which allows users to subscribe to any underground/overground line so it
+notifies them upon any service change**, be it a disruption or a recovery. It supports a wide variety of commands, all
+the way from `/status` to `/subscribe Victoria, Metropolitan`. More on this below.
 
 ## And technically, how is it structured?
 
-Since Londibot has been the application through which I have gotten aquainted with Elixir (it started as Clojure,
-but ((((¯\_(ツ)_/¯))))), it has suffered many major changes. Currently Londibot is structured in different blocks.
+Currently Londibot runs as a Phoenix application. It's divided between all the core logic under the `londibot` directory
+and all the web stuffs under `londibot_web`. Furthermore, the core business logic under `londibot` is presented under
+the following structure:
 
 - **TFL**, takes care of connecting via HTTP with the TFL API and adding the logic of which statuses are good, bad, etc.
 - **Subscriptions**, is in charge of handling user subscriptions to lines. It saves and queries them.
 - **Notifications** is one of the bigger blocks. It contains the different wrappers for the Slack/Telegram
   messaging APIs as well as a worker which polls TFL and discerns when to send a message or not.
 - **Commands** contains the logic to be executed for each command sent to the bot.
-- **Web** is basically the handlers of the webhooks for the Slack and Telegram APIs.
 
 ## Using Londibot
 
