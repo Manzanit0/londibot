@@ -1,7 +1,14 @@
-defmodule Londibot.Web.Handlers.SlackHandler do
+defmodule LondibotWeb.SlackController do
+  use LondibotWeb, :controller
+
   alias Londibot.Commands.Command
   alias Londibot.Commands.CommandRunner
-  alias Londibot.Web.CommandParser
+  alias LondibotWeb.CommandParser
+
+  def post(conn, _params) do
+    msg = handle!(conn)
+    send_resp(conn, 200, msg)
+  end
 
   def handle!(%Plug.Conn{body_params: bp}), do: handle!(bp)
 

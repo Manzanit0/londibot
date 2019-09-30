@@ -8,14 +8,12 @@ defmodule Londibot.StatusBroker do
 
   @tfl_service Application.get_env(:londibot, :tfl_service)
 
-  def start_link(_), do: start_link()
-
-  def start_link do
+  def start_link(args) do
     Logger.info("Starting StatusBroker")
-
-    status = @tfl_service.lines!() |> @tfl_service.status!()
-    Agent.start_link(fn -> status end, name: __MODULE__)
+    Agent.start_link(fn -> args end, name: __MODULE__)
   end
+
+  def start_link, do: start_link([])
 
   def get_latest! do
     @tfl_service.lines!()

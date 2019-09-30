@@ -1,4 +1,4 @@
-defmodule Londibot.Web.DefaultHeadersPlug do
+defmodule LondibotWeb.DefaultHeadersPlug do
   def init([]), do: false
 
   def call(conn, _opts) do

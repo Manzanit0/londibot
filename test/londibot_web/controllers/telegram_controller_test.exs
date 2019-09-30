@@ -1,15 +1,34 @@
-defmodule Londibot.Web.Handlers.TelegramHandlerTest do
-  use ExUnit.Case, async: true
+defmodule LondibotWeb.TelegramControllerTest do
+  use LondibotWeb.ConnCase
 
-  alias Londibot.Web.Handlers.TelegramHandler
+  alias LondibotWeb.TelegramController
 
-  test "status request returns all the statuses" do
+  test "returns success message with correct headers", %{conn: conn} do
+    World.new()
+    |> World.create()
+
+    body = %{"message" => %{"from" => %{"id" => "123"}, "text" => "/subscribe victoria"}}
+
+    response =
+      conn
+      |> post("/api/telegram", body)
+      |> json_response(200)
+
+    assert response == %{
+             "chat_id" => "123",
+             "method" => "sendMessage",
+             "parse_mode" => "markdown",
+             "text" => "Subscription saved!"
+           }
+  end
+
+ test "status request returns all the statuses" do
     World.new()
     |> World.with_disruption(line: "victoria", status: "Severe Delays", description: "oops")
     |> World.create()
 
     response =
-      TelegramHandler.handle!(%{"message" => %{"from" => %{"id" => "123"}, "text" => "/status"}})
+      TelegramController.handle!(%{"message" => %{"from" => %{"id" => "123"}, "text" => "/status"}})
 
     assert response == """
            {\"text\":\"\
@@ -42,7 +61,7 @@ defmodule Londibot.Web.Handlers.TelegramHandlerTest do
     |> World.create()
 
     response =
-      TelegramHandler.handle!(%{
+      TelegramController.handle!(%{
         "message" => %{"from" => %{"id" => "123"}, "text" => "/disruptions"}
       })
 
@@ -56,7 +75,7 @@ defmodule Londibot.Web.Handlers.TelegramHandlerTest do
 
   test "an error response is sent if the command doesn't exist" do
     response =
-      TelegramHandler.handle!(%{
+      TelegramController.handle!(%{
         "message" => %{"from" => %{"id" => "123"}, "text" => "break pls!"}
       })
 
@@ -69,6 +88,6 @@ defmodule Londibot.Web.Handlers.TelegramHandlerTest do
   end
 
   test "Upon unknown body params, ignore the message" do
-    assert "" == TelegramHandler.handle!(%{"channel_id" => "123", "text" => "break pls!"})
+    assert "" == TelegramController.handle!(%{"channel_id" => "123", "text" => "break pls!"})
   end
 end

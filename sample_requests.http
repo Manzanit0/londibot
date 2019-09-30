@@ -1,0 +1,24 @@
+### Landing page
+GET http://localhost:4000/
+
+### Send a message via Slack
+POST http://localhost:4000/api/slack/
+content-type: application/json
+
+{
+    "channel_id": "sample",
+    "text": "status"
+}
+
+### Send message via Telegram
+POST http://localhost:4000/api/telegram/
+content-type: application/json
+
+{
+    "message": {
+        "from": {
+            "id": "some_id"
+        },
+        "text": "/status"
+    }
+}

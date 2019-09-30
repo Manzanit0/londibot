@@ -1,12 +1,24 @@
-defmodule Londibot.Web.Handlers.SlackHandlerTest do
-  use ExUnit.Case, async: true
+defmodule LondibotWeb.SlackControllerTest do
+  use LondibotWeb.ConnCase
 
-  alias Londibot.Web.Handlers.SlackHandler
+  alias LondibotWeb.SlackController
 
-  test "handles SSL checks" do
+  test "returns success message with correct headers", %{conn: conn} do
+    World.new()
+    |> World.create()
+
+    response =
+      conn
+      |> post("/api/slack", %{channel_id: "123", text: "subscribe victoria"})
+      |> json_response(200)
+
+    assert response == %{"text" => "Subscription saved!", "response_type" => "in_channel"}
+  end
+
+ test "handles SSL checks" do
     ssl_check_request = %{"ssl_check" => "???", "token" => "some-token"}
 
-    assert "Received!" == SlackHandler.handle!(ssl_check_request)
+    assert "Received!" == SlackController.handle!(ssl_check_request)
   end
 
   test "status request returns all the statuses" do
@@ -14,7 +26,7 @@ defmodule Londibot.Web.Handlers.SlackHandlerTest do
     |> World.with_disruption(line: "victoria", status: "Severe Delays", description: "oops")
     |> World.create()
 
-    response = SlackHandler.handle!(%{"channel_id" => "123", "text" => "status"})
+    response = SlackController.handle!(%{"channel_id" => "123", "text" => "status"})
 
     assert response == """
            {\"text\":\"\
@@ -46,13 +58,13 @@ defmodule Londibot.Web.Handlers.SlackHandlerTest do
     )
     |> World.create()
 
-    response = SlackHandler.handle!(%{"channel_id" => "123", "text" => "disruptions"})
+    response = SlackController.handle!(%{"channel_id" => "123", "text" => "disruptions"})
 
     assert response == "{\"text\":\"BAKERLOO LINE: oops\\n\",\"response_type\":\"in_channel\"}"
   end
 
   test "an ephemeral response is sent if the command doesn't exist" do
-    response = SlackHandler.handle!(%{"channel_id" => "123", "text" => "break pls!"})
+    response = SlackController.handle!(%{"channel_id" => "123", "text" => "break pls!"})
 
     assert response == "{\"text\":\"The command you just tried doesn't exist!\"}"
   end
