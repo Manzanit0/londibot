@@ -15,7 +15,7 @@
             <li><a href="/dashboard">Check out our dashboards!</a></li>
           </ul>
         </nav>
-        <a href="https://tfl.gov.uk/">
+        <a href="/">
           <img src="<%= Routes.static_path(@conn, "/images/tfl-logo.png") %>"/>
         </a>
       </section>
