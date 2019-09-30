@@ -19,6 +19,7 @@ defmodule LondibotWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/dashboard", DashboardController, :index
   end
 
   scope "/api", LondibotWeb do

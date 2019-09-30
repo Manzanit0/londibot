@@ -1,0 +1,17 @@
+<section class="row">
+  <article class="column">
+    <h2>Disruptions in London since September 2019</h2>
+    <table style="width:100%">
+      <tr>
+        <th>Tube Line</th>
+        <th>Times disrupted</th>
+      </tr>
+      <%= for {line, count} <- disruptions_data(@conn) do %>
+        <tr>
+          <td><%= String.capitalize(line) %></td>
+          <td><%= count %></td>
+        </tr>
+      <% end %>
+    </table>
+  </article>
+</section>
