@@ -65,7 +65,9 @@ defmodule Londibot.TFL do
     do: true
 
   def routinary?(%StatusChange{description: desc}) when is_binary(desc) do
-    String.contains?(desc, "Train service resumes later this morning")
+    # I have found that the descriptions propagated by the API aren't consistent.
+    # It can go from "service resumes at 6.00h" to "service will resume later"
+    String.contains?(desc, "service") and String.contains?(desc, "resume")
   end
 
   def routinary?(_), do: false
