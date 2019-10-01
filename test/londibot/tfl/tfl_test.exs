@@ -46,4 +46,30 @@ defmodule Londibot.TFLTest do
 
     assert Enum.count(disruptions) == 0
   end
+
+  describe "routinary?/1" do
+    test "Train service resumes later this morning message" do
+      description =
+        "Victoria line status has changed from Good Service to Service Closed (Victoria Line: Train service resumes later this morning. )"
+
+      routinary_change =
+        Londibot.StatusChange.new()
+        |> Londibot.StatusChange.with_description(description)
+        |> Londibot.TFL.routinary?()
+
+      assert routinary_change == true
+    end
+
+    test "Service will resume later at 06.00h message" do
+      description =
+        "Victoria line status has changed from Good Service to Service Closed (Victoria Line: Service will resume later at 06.00h. )"
+
+      routinary_change =
+        Londibot.StatusChange.new()
+        |> Londibot.StatusChange.with_description(description)
+        |> Londibot.TFL.routinary?()
+
+      assert routinary_change == true
+    end
+  end
 end

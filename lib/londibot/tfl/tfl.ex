@@ -65,9 +65,9 @@ defmodule Londibot.TFL do
     do: true
 
   def routinary?(%StatusChange{description: desc}) when is_binary(desc) do
-    # I have found that the descriptions propagated by the API aren't consistent.
-    # It can go from "service resumes at 6.00h" to "service will resume later"
-    String.contains?(desc, "service") and String.contains?(desc, "resume")
+    desc
+    |> String.downcase()
+    |> nightfall_message?()
   end
 
   def routinary?(_), do: false
@@ -82,4 +82,9 @@ defmodule Londibot.TFL do
   end
 
   defp http_get!(request), do: HTTPoison.get!(request, timeout: 50_000, recv_timeout: 50_000)
+
+  # I have found that the descriptions propagated by the API aren't consistent.
+  # It can go from "service resumes at 6.00h" to "service will resume later"
+  defp nightfall_message?(msg),
+    do: String.contains?(msg, "service") and String.contains?(msg, "resume")
 end
