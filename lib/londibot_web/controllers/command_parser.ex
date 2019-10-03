@@ -15,6 +15,7 @@ defmodule LondibotWeb.CommandParser do
   defp parse_payload("subscriptions" <> params), do: {:ok, :subscriptions, params}
   defp parse_payload("status" <> params), do: {:ok, :status, params}
   defp parse_payload("disruptions" <> params), do: {:ok, :disruptions, params}
+  defp parse_payload("help" <> params), do: {:ok, :help, params}
   defp parse_payload(_), do: {:error, "The command you just tried doesn't exist!"}
 
   defp parse_params(""), do: {:ok, []}
