@@ -1,63 +1,17 @@
 defmodule Londibot.Commands.CommandRunner do
   alias Londibot.Commands.Command
+  alias Londibot.Commands.Help
   alias Londibot.Subscription
 
   @tfl_service Application.get_env(:londibot, :tfl_service)
   @subscription_store Application.get_env(:londibot, :subscription_store)
 
-  def execute(%Command{command: :help, params: ["subscribe"]}) do
-    message = """
-    *COMMAND*
-    `londibot subscribe [lines]`
+  def execute(%Command{command: :help, params: [param | []]}) do
+    message =
+      param
+      |> String.to_atom()
+      |> Help.description()
 
-    *DESCRIPTION*
-    Creates a subscription to said lines so that every time that any kind of disruption \
-    happens in the TFL line, it's sent via message. This includes all changes to/from delays, \
-    line closures, etc. except routinary changes like nightly closure and daily opening.
-
-    *OPTIONS*
-    Within the `[lines]` placeholder you may add any of the below options, \
-    separated by a comma:
-
-    _circle, district, dlr, hammersmith & city, london overground, metropolitan, \
-    waterloo & city, bakerloo, central, jubilee, northern, picadilly, victoria, \
-    tfl rail, tram_
-
-    *EXAMPLES*
-    londibot subscribe _dlr_
-    londibot subscribe _victoria, metropolitan_
-
-    *SEE ALSO*
-    `londibot unsubscribe`
-    `londibot subscriptions`
-    """
-    {:ok, message}
-  end
-
-  def execute(%Command{command: :help}) do
-    message = """
-    *Londibot commands usage:*
-
-    1. `londibot status`
-      Display the current status of TFL lines
-
-    2. `londibot disruptions`
-      Display current disruptions throughout all lines
-
-    3. `londibot subscribe [lines]`
-      Subscribe to notifications on any disruptions for the lines
-
-    4. `londibot unsubscribe [lines]`
-      Unsubscribe to the notifications
-
-    5. `londibot subscriptions`
-      List all existing subscriptions
-
-    6. `londibot help`
-      Show this help
-
-    Use `londibot COMMAND help` to see command help details.
-    """
     {:ok, message}
   end
 
