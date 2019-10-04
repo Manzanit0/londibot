@@ -7,29 +7,29 @@ defmodule Londibot.Commands.CommandRunner do
 
   def execute(%Command{command: :help, params: ["subscribe"]}) do
     message = """
-    *NAME*
-    londibot-subcribe – Subscribe to a tube line(s) disruption notifications
-
-    *SYNOPSIS*
-    londibot subscribe line1, line2, ...
-
-    *OPTIONS*
-    circle, district, dlr, hammersmith & city, london overground, metropolitan, \
-    waterloo & city, bakerloo, central, jubilee, northern, picadilly, victoria, \
-    tfl rail, tram
+    *COMMAND*
+    `londibot subscribe [lines]`
 
     *DESCRIPTION*
-    Creates a subscription to said lines so that every time that any kind of disruption\
-    happens in the TFL line, it's sent via message. This includes all changes to/from delays,\
+    Creates a subscription to said lines so that every time that any kind of disruption \
+    happens in the TFL line, it's sent via message. This includes all changes to/from delays, \
     line closures, etc. except routinary changes like nightly closure and daily opening.
+
+    *OPTIONS*
+    Within the `[lines]` placeholder you may add any of the below options, \
+    separated by a comma:
+
+    _circle, district, dlr, hammersmith & city, london overground, metropolitan, \
+    waterloo & city, bakerloo, central, jubilee, northern, picadilly, victoria, \
+    tfl rail, tram_
 
     *EXAMPLES*
     londibot subscribe _dlr_
     londibot subscribe _victoria, metropolitan_
 
     *SEE ALSO*
-    londibot-unsubscribe
-    londibot-subscriptions
+    `londibot unsubscribe`
+    `londibot subscriptions`
     """
     {:ok, message}
   end
