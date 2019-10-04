@@ -6,6 +6,10 @@ defmodule Londibot.Commands.CommandRunner do
   @tfl_service Application.get_env(:londibot, :tfl_service)
   @subscription_store Application.get_env(:londibot, :subscription_store)
 
+  def execute(%Command{command: :help, params: []}) do
+    {:ok, Help.description(:empty)}
+  end
+
   def execute(%Command{command: :help, params: [param | []]}) do
     message =
       param

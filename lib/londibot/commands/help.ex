@@ -1,4 +1,9 @@
 defmodule Londibot.Commands.Help do
+  @moduledoc """
+  This module simply contains the help messages to display to the user
+  for each command. They messages are encapsulated in functions for simplicity.
+  """
+
   def description(:subscribe) do
     """
     *COMMAND*
