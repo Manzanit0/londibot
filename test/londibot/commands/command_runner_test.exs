@@ -4,6 +4,24 @@ defmodule Londibot.Commands.CommandRunnerTest do
   alias Londibot.Commands.CommandRunner
   alias Londibot.Commands.Command
 
+  test "gets a generic help message" do
+    {:ok, result} =
+      :help
+      |> Command.new([])
+      |> CommandRunner.execute()
+
+      assert is_binary(result)
+  end
+
+  test "gets the help message of a specific command" do
+    {:ok, result} =
+      :help
+      |> Command.new(["subscribe"])
+      |> CommandRunner.execute()
+
+      assert is_binary(result)
+  end
+
   test "formats line statuses as a report" do
     World.new()
     |> World.with_disruption(line: "Circle", status: "Minor Delays", description: "...")
