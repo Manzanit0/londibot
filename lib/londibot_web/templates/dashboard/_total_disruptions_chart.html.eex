@@ -1,0 +1,68 @@
+  
+<figure>
+  <figcaption><%= @title %></figcaption>
+  <svg version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            class="chart"
+            width="700"
+            height="300"
+            aria-labelledby="title"
+            role="img">
+    <%= for {index, line, count, max} <- @data do %>
+      <g class="bar">
+        <title id="title"><%= count %></title>
+        <%= tag(:rect,
+                  height: count*2,
+                  width: 35,
+                  y: 300 - max*2,
+                  transform: "translate(0, #{max*2 - count*2})",
+                  x: index*40) %></rect>
+      <%= tag(:text,
+                  x: index*40,
+                  y: 300 - max*2 - count/2,
+                  transform_origin: "bottom left",
+                  transform: "translate(180, #{70 - count*1.5}) rotate(-45, #{index*40}, #{70 - count/2})",
+                  dy: "2.5rem") %>
+      <%= line %>
+    </rect>
+  </g>
+<% end %>
+</svg>
+</figure>
+<style>
+  .bar {
+    fill: #aaa;
+    height: 35px;
+    transition: fill .3s ease;
+    cursor: pointer;
+    font-family: Helvetica, sans-serif;
+  
+    text {
+      fill: #555;
+    }
+  }
+  
+  .chart:hover,
+  .chart:focus {
+    .bar {
+      fill: #aaa;
+    }
+  }
+  
+  .bar:hover,
+  .bar:focus {
+    fill: red !important;
+  
+    text {
+      fill: red;
+    }
+  }
+  
+  figcaption {
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 20px;
+  }
+  }
+</style>

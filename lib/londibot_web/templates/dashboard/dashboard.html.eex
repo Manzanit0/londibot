@@ -6,12 +6,17 @@
         <th>Tube Line</th>
         <th>Times disrupted</th>
       </tr>
-      <%= for {line, count} <- disruptions_data(@conn) do %>
+      <%= for {_, line, count, _} <- disruptions_data(@conn) do %>
         <tr>
           <td><%= String.capitalize(line) %></td>
           <td><%= count %></td>
         </tr>
       <% end %>
     </table>
+  </article>
+</section>
+<section class="row">
+  <article class="column">
+    <%= render "_total_disruptions_chart.html", title: "Charted data", data: disruptions_data(@conn) %> 
   </article>
 </section>
