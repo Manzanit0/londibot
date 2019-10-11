@@ -1,5 +1,7 @@
 use Mix.Config
 
+config :bugsnag, api_key: System.get_env("BUGSNAG_API_KEY")
+
 config :londibot, Londibot.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: System.get_env("DATABASE_URL"),
