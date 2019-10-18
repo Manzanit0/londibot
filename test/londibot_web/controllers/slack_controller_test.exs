@@ -15,7 +15,7 @@ defmodule LondibotWeb.SlackControllerTest do
     assert response == %{"text" => "Subscription saved!", "response_type" => "in_channel"}
   end
 
- test "handles SSL checks" do
+  test "handles SSL checks" do
     ssl_check_request = %{"ssl_check" => "???", "token" => "some-token"}
 
     assert "Received!" == SlackController.handle!(ssl_check_request)

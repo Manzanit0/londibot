@@ -10,7 +10,7 @@ defmodule Londibot.Commands.CommandRunnerTest do
       |> Command.new([])
       |> CommandRunner.execute()
 
-      assert is_binary(result)
+    assert is_binary(result)
   end
 
   test "gets the help message of a specific command" do
@@ -19,7 +19,7 @@ defmodule Londibot.Commands.CommandRunnerTest do
       |> Command.new(["subscribe"])
       |> CommandRunner.execute()
 
-      assert is_binary(result)
+    assert is_binary(result)
   end
 
   test "formats line statuses as a report" do

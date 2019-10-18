@@ -22,13 +22,15 @@ defmodule LondibotWeb.TelegramControllerTest do
            }
   end
 
- test "status request returns all the statuses" do
+  test "status request returns all the statuses" do
     World.new()
     |> World.with_disruption(line: "victoria", status: "Severe Delays", description: "oops")
     |> World.create()
 
     response =
-      TelegramController.handle!(%{"message" => %{"from" => %{"id" => "123"}, "text" => "/status"}})
+      TelegramController.handle!(%{
+        "message" => %{"from" => %{"id" => "123"}, "text" => "/status"}
+      })
 
     assert response == """
            {\"text\":\"\
