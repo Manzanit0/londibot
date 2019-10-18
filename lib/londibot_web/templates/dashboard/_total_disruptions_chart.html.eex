@@ -12,17 +12,16 @@
       <g class="bar">
         <title id="title"><%= count %></title>
         <%= tag(:rect,
-                  height: count*2,
-                  width: 35,
-                  y: 300 - max*2,
-                  transform: "translate(0, #{max*2 - count*2})",
-                  x: index*40) %></rect>
+                  width: bar_width,
+                  height: bar_height(max, count, max_height),
+                  x: bar_x(index),
+                  y: bar_y(max, count, max_height)) %></rect>
         <%= tag(:text,
-                  x: index*40,
-                  y: 300 - max*2 - count/2,
+                  x: text_x(index),
+                  y: text_y(max, count, max_height),
                   transform_origin: "bottom left",
-                  transform: "translate(180, #{70 - count*1.5}) rotate(-45, #{index*40}, #{70 - count/2})",
-                  dy: "2.5rem") %>
+                  transform: text_transform(count, index),
+                  dy: "6.5rem") %>
       <%= line %>
     </rect>
   </g>
