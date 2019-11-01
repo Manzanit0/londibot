@@ -33,7 +33,8 @@ defmodule LondibotWeb.SlackAuthController do
   defp to_official_response(%{"error" => _}),
     do: Poison.encode!(%{error: "There has been an error when trying to authenticate against Slack."})
 
-  defp to_official_response(resp), do: resp
+  defp to_official_response(resp),
+      do: Poison.encode!(%{message: "Authentication succesful! Check your workspace for @londibot!"})
 
   defp with_params(url, code, client_id, client_secret), do:
     "#{url}?code=#{code}&client_id=#{client_id}&client_secret=#{client_secret}"
