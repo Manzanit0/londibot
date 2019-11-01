@@ -28,5 +28,6 @@ defmodule LondibotWeb.Router do
     # get("/", do: send_resp(conn, 200, "Service up and running!!"))
     post "/telegram", TelegramController, :post
     post "/slack", SlackController, :post
+    get "/slack-auth", SlackAuthController, :get!
   end
 end
