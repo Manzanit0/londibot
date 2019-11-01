@@ -54,8 +54,5 @@ config :phoenix, :plug_init_mode, :runtime
 # Configure your database
 config :londibot, Londibot.Repo,
   adapter: Ecto.Adapters.Postgres,
-  url: System.get_env("LONDIBOT_DB_URL"),
-  database: "londibot_repo",
-  ssl: true,
-  # When connecting to Gigalixir, it has a pool limit.
-  pool_size: 1
+  url: "ecto://postgres:@localhost/londibot_repo",
+  database: "londibot_repo"
