@@ -37,7 +37,7 @@ defmodule Londibot.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:httpoison, "~> 1.4"},
+      {:httpoison, "~> 1.6.1"},
       {:poison, "~> 3.0"},
       {:bugsnag, "~> 1.7.0"},
       {:mox, "~> 0.5.0", only: :test},
