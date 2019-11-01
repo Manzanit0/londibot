@@ -11,7 +11,7 @@
         <a href="https://t.me/LondiBot">Telegram</a>
       </li>
       <li>
-        <a href="#">Slack... coming soon :)</a>
+        <a href="https://slack.com/oauth/authorize?scope=incoming-webhook,commands,bot&client_id=2225972970.533137885794">Slack</a>
       </li>
     </ul>
   </article>
