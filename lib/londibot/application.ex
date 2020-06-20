@@ -37,9 +37,9 @@ defmodule Londibot.Application do
   # Another approach? -> https://elixirforum.com/t/designing-an-agent-with-side-effects-on-start-link/25576
   defp load_status_worker(:test), do: nil
 
-  defp load_status_worker(_),
-    do:
-      Agent.cast(Londibot.StatusBroker, fn _ ->
-        @tfl_service.lines!() |> @tfl_service.status!()
-      end)
+  defp load_status_worker(_) do
+    Agent.cast(Londibot.StatusBroker, fn _ ->
+      @tfl_service.lines!() |> @tfl_service.status!()
+    end)
+  end
 end
