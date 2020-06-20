@@ -54,5 +54,4 @@ config :phoenix, :plug_init_mode, :runtime
 # Configure your database
 config :londibot, Londibot.Repo,
   adapter: Ecto.Adapters.Postgres,
-  url: "ecto://postgres:@localhost/londibot_repo",
-  database: "londibot_repo"
+  url: "postgres://postgres:docker@localhost:5432/londibot_repo"

@@ -11,9 +11,7 @@ config :logger, level: :error
 
 # Configure your database
 config :londibot, Londibot.Repo,
-  database: "londibot_repo",
-  username: "postgres",
-  hostname: "localhost",
+  url: "postgres://postgres:docker@localhost:5432/londibot_repo",
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :londibot, :tfl_service, Londibot.TFLMock
