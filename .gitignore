@@ -51,3 +51,6 @@ npm-debug.log
 # No Vim backup or swap files
 *~
 *.swp
+
+# direnv file
+.envrc
