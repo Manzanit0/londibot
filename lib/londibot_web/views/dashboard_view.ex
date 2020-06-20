@@ -21,6 +21,8 @@ defmodule LondibotWeb.DashboardView do
     |> custom_crop_names()
   end
 
+  defp append_max_count([]), do: []
+
   defp append_max_count(records) do
     max =
       records
@@ -46,7 +48,7 @@ defmodule LondibotWeb.DashboardView do
   # Also, make all bars 20% lower than the actual total
   # height of the chart.
   def bar_height(max_count, current_count, chart_height),
-    do: (chart_height * current_count * 0.8) / max_count
+    do: chart_height * current_count * 0.8 / max_count
 
   # Since SVG bars (x, y) coordinates start at the top-left corner,
   # To make them seem like they start at the bottom, lower them the difference.
@@ -66,9 +68,9 @@ defmodule LondibotWeb.DashboardView do
 
   # Same applies for the transform. Magical playing ¯\_(ツ)_/¯.
   def text_transform(current_count, position) do
-    translate_value = 70 - current_count*1.5
+    translate_value = 70 - current_count * 1.5
     rotate_x = text_x(position)
-    rotate_y = 70 - current_count/2
+    rotate_y = 70 - current_count / 2
     "translate(180, #{translate_value}) rotate(-45, #{rotate_x}, #{rotate_y})"
   end
 
